@@ -1,0 +1,57 @@
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://d2asa51h3f7ie"]
+
+[ext_resource type="Texture2D" uid="uid://dmjy6wb773n8h" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/buttonLong_beige.png" id="1_i5l5v"]
+[ext_resource type="Texture2D" uid="uid://ci4dhu81i7ce8" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/panel_brown.png" id="2_abgkg"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2nwro"]
+texture = ExtResource("1_i5l5v")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+modulate_color = Color(0.446777, 0.446777, 0.446777, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6b2ql"]
+texture = ExtResource("1_i5l5v")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1qmue"]
+texture = ExtResource("1_i5l5v")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fayuv"]
+texture = ExtResource("1_i5l5v")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6byam"]
+texture = ExtResource("1_i5l5v")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pucv4"]
+texture = ExtResource("2_abgkg")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[resource]
+Button/font_sizes/font_size = 40
+Button/styles/disabled = SubResource("StyleBoxTexture_2nwro")
+Button/styles/focus = SubResource("StyleBoxTexture_6b2ql")
+Button/styles/hover = SubResource("StyleBoxTexture_1qmue")
+Button/styles/normal = SubResource("StyleBoxTexture_fayuv")
+Button/styles/pressed = SubResource("StyleBoxTexture_6byam")
+Label/font_sizes/font_size = 30
+Panel/styles/panel = SubResource("StyleBoxTexture_pucv4")

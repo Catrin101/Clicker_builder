@@ -11,16 +11,26 @@ config_version=5
 [application]
 
 config/name="Clicker"
+run/main_scene="uid://vsmgd0bgc1uv"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Global="*res://scripts/Global.gd"
+GameManager="*res://scripts/GameManager.gd"
+
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
 
 [dotnet]
 
 project/assembly_name="Clicker"
+
+[gui]
+
+theme/custom="uid://d2asa51h3f7ie"
 
 [rendering]
 
