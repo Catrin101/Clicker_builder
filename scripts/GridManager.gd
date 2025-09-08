@@ -1,4 +1,4 @@
-# GridManager.gd - Gestor de la cuadrícula
+# GridManager.gd - Gestor de la cuadrícula (ACTUALIZADO PARA SPRINT 2)
 extends Node2D
 
 # Diccionario para almacenar las casillas (clave: "x,y", valor: nodo)
@@ -93,7 +93,7 @@ func buy_and_place_terrain(x: int, y: int) -> bool:
 	
 	return false
 
-# Función para obtener los vecinos de una casilla
+# NUEVA FUNCIÓN: Obtener los vecinos de una casilla (MEJORADA PARA EDIFICIOS)
 func get_neighbors(x: int, y: int) -> Dictionary:
 	var neighbors = {}
 	var adjacent_positions = [
@@ -106,7 +106,13 @@ func get_neighbors(x: int, y: int) -> Dictionary:
 	for adj in adjacent_positions:
 		var key = str(adj.pos.x) + "," + str(adj.pos.y)
 		if grid_cells.has(key):
-			neighbors[adj.dir] = grid_cells[key]
+			var terrain = grid_cells[key]
+			# Si el terreno tiene un edificio, devolver el edificio
+			if terrain.has_building and terrain.building_node:
+				neighbors[adj.dir] = terrain.building_node
+			# Si no tiene edificio pero es una estructura, devolver la estructura
+			elif terrain.has_method("get_structure_name"):
+				neighbors[adj.dir] = terrain
 	
 	return neighbors
 
@@ -115,7 +121,7 @@ func has_terrain(x: int, y: int) -> bool:
 	var key = str(x) + "," + str(y)
 	return grid_cells.has(key)
 
-# Función para colocar un edificio
+# FUNCIÓN MEJORADA: Colocar un edificio
 func place_building(x: int, y: int, building_scene_path: String) -> bool:
 	# Verificar que hay terreno en esa posición
 	if not has_terrain(x, y):
@@ -132,9 +138,13 @@ func place_building(x: int, y: int, building_scene_path: String) -> bool:
 	
 	# Cargar y colocar el edificio
 	var building_scene = load(building_scene_path)
+	if not building_scene:
+		print("Error: No se pudo cargar la escena del edificio: ", building_scene_path)
+		return false
+	
 	var building_instance = building_scene.instantiate()
 	
-	# Configurar posición
+	# Configurar posición en la cuadrícula
 	building_instance.position = Vector2(x * cell_size, y * cell_size)
 	building_instance.grid_x = x
 	building_instance.grid_y = y
@@ -147,12 +157,32 @@ func place_building(x: int, y: int, building_scene_path: String) -> bool:
 	current_cell.building_node = building_instance
 	
 	building_placed.emit(x, y)
-	print("Edificio colocado en (", x, ", ", y, ")")
+	print("Edificio colocado en (", x, ", ", y, "): ", building_instance.building_name)
+	
+	# NUEVO: Recalcular sinergias de edificios vecinos
+	notify_neighbors_synergy_change(x, y)
 	
 	# Recalcular puntos por segundo
 	GameManager.recalculate_total_points_per_second()
 	
 	return true
+
+# NUEVA FUNCIÓN: Notificar a los vecinos que recalculen sus sinergias
+func notify_neighbors_synergy_change(x: int, y: int):
+	var adjacent_positions = [
+		Vector2i(x + 1, y),
+		Vector2i(x - 1, y),
+		Vector2i(x, y + 1),
+		Vector2i(x, y - 1)
+	]
+	
+	for pos in adjacent_positions:
+		var key = str(pos.x) + "," + str(pos.y)
+		if grid_cells.has(key):
+			var terrain = grid_cells[key]
+			if terrain.has_building and terrain.building_node:
+				if terrain.building_node.has_method("on_neighbor_changed"):
+					terrain.building_node.on_neighbor_changed()
 
 # Función para convertir coordenadas del mundo a coordenadas de cuadrícula
 func world_to_grid(world_pos: Vector2) -> Vector2i:
@@ -164,3 +194,32 @@ func world_to_grid(world_pos: Vector2) -> Vector2i:
 # Función para convertir coordenadas de cuadrícula a coordenadas del mundo
 func grid_to_world(grid_pos: Vector2i) -> Vector2:
 	return Vector2(grid_pos.x * cell_size, grid_pos.y * cell_size)
+
+# NUEVA FUNCIÓN: Obtener todos los edificios en la cuadrícula
+func get_all_buildings() -> Array:
+	var buildings = []
+	for cell_key in grid_cells:
+		var terrain = grid_cells[cell_key]
+		if terrain.has_building and terrain.building_node:
+			buildings.append(terrain.building_node)
+	return buildings
+
+# NUEVA FUNCIÓN: Obtener información de estadísticas
+func get_grid_stats() -> Dictionary:
+	var stats = {
+		"total_cells": grid_cells.size(),
+		"total_buildings": 0,
+		"building_types": {}
+	}
+	
+	for cell_key in grid_cells:
+		var terrain = grid_cells[cell_key]
+		if terrain.has_building and terrain.building_node:
+			stats.total_buildings += 1
+			var building_name = terrain.building_node.building_name
+			if stats.building_types.has(building_name):
+				stats.building_types[building_name] += 1
+			else:
+				stats.building_types[building_name] = 1
+	
+	return stats

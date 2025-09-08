@@ -1,4 +1,4 @@
-# Terrain.gd - Script para las casillas de terreno
+# Terrain.gd - Script para las casillas de terreno (CORREGIDO)
 extends Node2D
 
 # Variables para la posición en la cuadrícula
@@ -23,7 +23,7 @@ func _ready():
 	# Configurar el color inicial (verde para terreno libre)
 	update_visual_state()
 
-func _on_area_input_event(viewport: Node, event: InputEvent, shape_idx: int):
+func _on_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			_on_terrain_clicked()
