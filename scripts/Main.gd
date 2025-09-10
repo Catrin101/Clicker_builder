@@ -276,5 +276,10 @@ func _on_building_placement_cancelled():
 
 # Timer callback para puntos automáticos
 func _on_points_timer_timeout():
-	if GameManager.total_points_per_second > 0:
-		GameManager.add_points(int(GameManager.total_points_per_second))
+	var current_pps = GameManager.total_points_per_second
+	if current_pps > 0:
+		var points_to_add = int(ceil(current_pps))  # Redondear hacia arriba para valores pequeños
+		GameManager.add_points(points_to_add)
+		print("Timer: Añadidos ", points_to_add, " puntos automáticos (PPS: ", current_pps, ")")
+	else:
+		print("Timer: Sin puntos que añadir (PPS: ", current_pps, ")")

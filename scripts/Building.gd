@@ -1,4 +1,4 @@
-# Building.gd - Clase base para todos los edificios
+# Building.gd - Clase base para todos los edificios - CORREGIDA
 class_name Building
 extends Node2D
 
@@ -9,7 +9,6 @@ extends Node2D
 @export var description: String = ""
 
 # Diccionario de sinergias: edificio_vecino -> porcentaje_de_cambio
-# Ejemplo: {"House": 10, "Tavern": -5} significa +10% con Casa, -5% con Taberna
 @export var synergies: Dictionary = {}
 
 # Variables de posición en cuadrícula
@@ -17,7 +16,7 @@ var grid_x: int = 0
 var grid_y: int = 0
 
 # Variables de sinergia calculada
-var synergy_multipliers: Dictionary = {}  # Dirección -> multiplicador
+var synergy_multipliers: Dictionary = {}
 var total_synergy_multiplier: float = 1.0
 
 # Referencias a nodos
@@ -41,8 +40,7 @@ func _ready():
 	# Configurar animación de balanceo inicial
 	call_deferred("start_bobble_animation")
 	
-	# Calcular sinergias iniciales
-	call_deferred("calculate_synergies")
+	print("Building _ready - Nombre: ", building_name, ", PPS base: ", points_per_second)
 
 func _on_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int):
 	if event is InputEventMouseButton:
@@ -50,14 +48,12 @@ func _on_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int):
 			_on_building_clicked()
 
 func _on_mouse_entered():
-	# Efecto visual al pasar el mouse
 	if tween:
 		tween.kill()
 	tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(1.1, 1.1), 0.2)
 	
 func _on_mouse_exited():
-	# Volver al tamaño normal
 	if tween:
 		tween.kill()
 	tween = create_tween()
@@ -65,7 +61,8 @@ func _on_mouse_exited():
 
 func _on_building_clicked():
 	print("Edificio clickeado: ", building_name, " en (", grid_x, ", ", grid_y, ")")
-	# Aquí se podría mostrar información del edificio o menú contextual
+	print("  PPS base: ", points_per_second, ", PPS total: ", get_total_points_per_second())
+	print("  Multiplicador de sinergia: ", total_synergy_multiplier)
 
 # Función para iniciar la animación de balanceo
 func start_bobble_animation():
@@ -73,12 +70,13 @@ func start_bobble_animation():
 		tween = create_tween()
 	
 	tween.set_loops()
-	# Animación sutil de balanceo
 	tween.tween_property(sprite, "rotation", deg_to_rad(2), 2.0)
 	tween.tween_property(sprite, "rotation", deg_to_rad(-2), 2.0)
 
-# Función principal para calcular sinergias
+# Función principal para calcular sinergias - CORREGIDA
 func calculate_synergies():
+	print("\n=== Calculando sinergias para ", building_name, " en (", grid_x, ", ", grid_y, ") ===")
+	
 	# Limpiar multiplicadores anteriores
 	synergy_multipliers.clear()
 	total_synergy_multiplier = 1.0
@@ -91,6 +89,11 @@ func calculate_synergies():
 	
 	# Obtener vecinos
 	var neighbors = grid_manager.get_neighbors(grid_x, grid_y)
+	print("Vecinos encontrados: ", neighbors.size())
+	
+	# Arrays para almacenar multiplicadores
+	var positive_multipliers = []
+	var negative_multipliers = []
 	
 	# Calcular multiplicador para cada dirección
 	for direction in ["right", "left", "up", "down"]:
@@ -99,27 +102,51 @@ func calculate_synergies():
 		if neighbors.has(direction):
 			var neighbor = neighbors[direction]
 			multiplier = calculate_synergy_with_neighbor(neighbor)
+			var neighbor_name = ""
+			if neighbor.has_method("get_building_name"):
+				neighbor_name = neighbor.get_building_name()
+			elif neighbor.has_method("get_structure_name"):
+				neighbor_name = neighbor.get_structure_name()
+			elif "building_name" in neighbor:
+				neighbor_name = neighbor.building_name
+			elif "structure_name" in neighbor:
+				neighbor_name = neighbor.structure_name
+			else:
+				neighbor_name = "Desconocido"
+			print("  ", direction, ": ", neighbor_name, " -> multiplicador: ", multiplier)
+		else:
+			print("  ", direction, ": Sin vecino")
 		
 		synergy_multipliers[direction] = multiplier
+		
+		# Separar multiplicadores positivos y negativos
+		if multiplier > 1.0:
+			positive_multipliers.append(multiplier)
+		elif multiplier < 1.0:
+			negative_multipliers.append(multiplier)
 	
-	# Calcular multiplicador total (promedio de todas las direcciones)
-	var total_multiplier = 0.0
-	var count = 0
+	# Calcular multiplicador total
+	# Aplicar todos los multiplicadores positivos
+	for mult in positive_multipliers:
+		total_synergy_multiplier *= mult
 	
-	for direction in synergy_multipliers:
-		total_multiplier += synergy_multipliers[direction]
-		count += 1
-	
-	if count > 0:
-		total_synergy_multiplier = total_multiplier / count
+	# Aplicar todos los multiplicadores negativos
+	for mult in negative_multipliers:
+		total_synergy_multiplier *= mult
 	
 	# Actualizar visualización
 	update_synergy_display()
 	
 	# Notificar al GameManager para recalcular puntos totales
-	GameManager.recalculate_total_points_per_second()
+	call_deferred("notify_gamemanager_recalculate")
 	
-	print("Sinergias recalculadas para ", building_name, " - Multiplicador total: ", total_synergy_multiplier)
+	print("  Multiplicador total final: ", total_synergy_multiplier)
+	print("  PPS final: ", get_total_points_per_second())
+	print("=== Fin cálculo sinergias ===\n")
+
+# Función separada para notificar al GameManager (evita problemas de dependencias circulares)
+func notify_gamemanager_recalculate():
+	GameManager.recalculate_total_points_per_second()
 
 # Función para calcular la sinergia con un vecino específico
 func calculate_synergy_with_neighbor(neighbor: Node) -> float:
@@ -133,15 +160,19 @@ func calculate_synergy_with_neighbor(neighbor: Node) -> float:
 		if synergies.has(neighbor_name):
 			var synergy_percent = synergies[neighbor_name]
 			base_multiplier = 1.0 + (synergy_percent / 100.0)
-			print("Sinergia encontrada: ", building_name, " + ", neighbor_name, " = ", synergy_percent, "%")
+			print("    Sinergia encontrada: ", building_name, " + ", neighbor_name, " = ", synergy_percent, "% (multiplicador: ", base_multiplier, ")")
+		else:
+			print("    Sin sinergia definida con: ", neighbor_name)
 	
 	# Verificar si el vecino es una estructura que modifica sinergias
 	elif neighbor.has_method("modify_synergy"):
+		var old_multiplier = base_multiplier
 		base_multiplier = neighbor.modify_synergy(self, base_multiplier)
+		print("    Estructura modifica sinergia: ", old_multiplier, " -> ", base_multiplier)
 	
 	return base_multiplier
 
-# Función para actualizar la visualización de sinergias
+# Función para actualizar la visualización de sinergias - CORREGIDA
 func update_synergy_display():
 	var directions = [
 		{"label": right_synergy, "key": "right"},
@@ -154,18 +185,21 @@ func update_synergy_display():
 		var label = dir.label
 		var multiplier = synergy_multipliers.get(dir.key, 1.0)
 		
-		if multiplier != 1.0:
-			var percentage = int((multiplier - 1.0) * 100)
+		if abs(multiplier - 1.0) > 0.001:  # Usar comparación con tolerancia para floats
+			var percentage = int(round((multiplier - 1.0) * 100))
 			if percentage > 0:
 				label.text = "+" + str(percentage) + "%"
 				label.modulate = Color.GREEN
+				label.visible = true
 			else:
 				label.text = str(percentage) + "%"
 				label.modulate = Color.RED
+				label.visible = true
 		else:
 			label.text = ""
+			label.visible = false
 
-# Función para obtener el nombre del edificio (usado por otros edificios)
+# Función para obtener el nombre del edificio
 func get_building_name() -> String:
 	return building_name
 
@@ -184,6 +218,13 @@ func get_building_info() -> Dictionary:
 		"description": description
 	}
 
-# Función que se llama cuando un vecino cambia (para recalcular sinergias)
+# Función que se llama cuando un vecino cambia
 func on_neighbor_changed():
+	call_deferred("calculate_synergies")
+
+# Función que se llama después de ser colocado en la cuadrícula
+func on_placed_in_grid(x: int, y: int):
+	grid_x = x
+	grid_y = y
+	print("Edificio ", building_name, " colocado en cuadrícula en (", x, ", ", y, ")")
 	call_deferred("calculate_synergies")

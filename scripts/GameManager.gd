@@ -1,4 +1,4 @@
-# GameManager.gd - El cerebro del juego (Singleton)
+# GameManager.gd - El cerebro del juego (Singleton) - CORREGIDO
 extends Node
 
 # Variables principales del juego
@@ -33,22 +33,37 @@ func subtract_points(amount: int) -> bool:
 		print("No tienes suficientes puntos. Tienes: ", player_points, " necesitas: ", amount)
 		return false
 
-# Función para recalcular el total de puntos por segundo
+# Función para recalcular el total de puntos por segundo - CORREGIDA
 func recalculate_total_points_per_second():
 	total_points_per_second = 0.0
 	
 	# Obtener referencia al GridManager
 	var grid_manager = get_tree().get_first_node_in_group("grid_manager")
 	if grid_manager:
-		# Iterar sobre todos los edificios en la cuadrícula
+		print("Recalculando PPS - Terrenos en cuadrícula: ", grid_manager.grid_cells.size())
+		
+		# Iterar sobre todos los terrenos en la cuadrícula
 		for cell_key in grid_manager.grid_cells:
-			var cell_content = grid_manager.grid_cells[cell_key]
-			# Solo contar edificios (que tienen points_per_second)
-			if cell_content.has_method("get_total_points_per_second"):
-				total_points_per_second += cell_content.get_total_points_per_second()
+			var terrain = grid_manager.grid_cells[cell_key]
+			
+			# Si el terreno tiene un edificio
+			if terrain.has_building and terrain.building_node:
+				var building = terrain.building_node
+				if building.has_method("get_total_points_per_second"):
+					var building_pps = building.get_total_points_per_second()
+					total_points_per_second += building_pps
+					print("  Edificio ", building.building_name, " en ", cell_key, " aporta: ", building_pps, " PPS")
+			
+			# Si el terreno en sí es una estructura (como árboles, cultivos, etc.)
+			elif terrain.has_method("get_total_points_per_second"):
+				var structure_pps = terrain.get_total_points_per_second()
+				total_points_per_second += structure_pps
+				print("  Estructura ", terrain.structure_name if terrain.has_method("get_structure_name") else "Desconocida", " en ", cell_key, " aporta: ", structure_pps, " PPS")
+	else:
+		print("Error: No se encontró GridManager en el grupo 'grid_manager'")
 	
 	points_per_second_changed.emit(total_points_per_second)
-	print("Total puntos por segundo recalculado: ", total_points_per_second)
+	print("=== Total puntos por segundo recalculado: ", total_points_per_second, " ===")
 
 # Función para iniciar el modo de colocación de edificios
 func start_placing_mode(building_scene_path: String):
@@ -70,5 +85,10 @@ func can_afford(cost: int) -> bool:
 
 # Función que se llama cada segundo para añadir puntos automáticos
 func _on_points_timer_timeout():
-	if total_points_per_second > 0:
-		add_points(int(total_points_per_second))
+	var current_pps = total_points_per_second
+	if current_pps > 0:
+		var points_to_add = int(ceil(current_pps))
+		add_points(points_to_add)
+		print("GameManager Timer: +", points_to_add, " puntos automáticos (PPS: ", current_pps, ")")
+	else:
+		print("GameManager Timer: Sin PPS activos")
