@@ -1,0 +1,12 @@
+[gd_scene load_steps=4 format=3 uid="uid://dn10b63ri0rss"]
+
+[ext_resource type="PackedScene" uid="uid://cdnwu4mybwp03" path="res://escenas/Building.tscn" id="1_house"]
+[ext_resource type="Script" uid="uid://co8vll0dndf27" path="res://scripts/Inn.gd" id="2_dsam0"]
+[ext_resource type="Texture2D" uid="uid://b8fle71cs0vu2" path="res://sprites/Estructuras/Edificios/inn.png" id="3_34dc0"]
+
+[node name="Inn" instance=ExtResource("1_house")]
+script = ExtResource("2_dsam0")
+
+[node name="Sprite2D" parent="." index="0"]
+position = Vector2(0, -19)
+texture = ExtResource("3_34dc0")

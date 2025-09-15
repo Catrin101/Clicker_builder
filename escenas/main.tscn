@@ -101,7 +101,7 @@ size_flags_vertical = 3
 [node name="TestSection" type="Label" parent="UI/StorePanel/StoreUI"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "--- PRUEBA SPRINT 2 ---"
+text = "--- PRUEBA SPRINT 3 ---"
 horizontal_alignment = 1
 
 [node name="SynergyInfo" type="RichTextLabel" parent="UI/StorePanel/StoreUI"]
@@ -111,5 +111,17 @@ text = "[b]Sinergias de Casa:[/b]
 [color=green]+5%[/color] con Taberna
 [color=green]+5%[/color] con Capilla  
 [color=red]-5%[/color] con Castillo"
+
+[node name="CancelPlacementButton" type="Button" parent="UI"]
+visible = false
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -201.0
+offset_top = 14.0
+offset_right = -13.0
+offset_bottom = 89.0
+grow_horizontal = 0
+text = "Cancelar"
 
 [node name="Camera2D" type="Camera2D" parent="."]
