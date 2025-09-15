@@ -53,5 +53,5 @@ Button/styles/focus = SubResource("StyleBoxTexture_6b2ql")
 Button/styles/hover = SubResource("StyleBoxTexture_1qmue")
 Button/styles/normal = SubResource("StyleBoxTexture_fayuv")
 Button/styles/pressed = SubResource("StyleBoxTexture_6byam")
-Label/font_sizes/font_size = 30
+Label/font_sizes/font_size = 20
 Panel/styles/panel = SubResource("StyleBoxTexture_pucv4")
