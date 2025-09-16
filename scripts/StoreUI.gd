@@ -232,8 +232,8 @@ func create_temporary_feedback(message: String, color: Color):
 	
 	# Crear tween para efecto de desvanecimiento
 	var tween = create_tween()
-	tween.tween_delay(1.5)  # Esperar 1.5 segundos
-	tween.tween_property(feedback_panel, "modulate:a", 0.0, 1.0)  # Desvanecer en 1 segundo
+	tween.tween_interval(1.5)  # Reemplaza tween_delay con tween_interval
+	tween.tween_property(feedback_panel, "modulate:a", 0.0, 1.0)
 	tween.tween_callback(feedback_panel.queue_free)
 
 func _on_points_changed(new_points: int):

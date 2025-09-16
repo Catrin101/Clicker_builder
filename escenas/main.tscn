@@ -44,7 +44,7 @@ anchor_bottom = 1.0
 offset_left = -352.0
 offset_top = -119.0
 offset_right = -30.0
-offset_bottom = -35.0
+offset_bottom = -38.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
@@ -58,10 +58,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 14.0
-offset_top = -115.0
-offset_right = 385.0
-offset_bottom = -34.0
+offset_left = 53.0
+offset_top = -119.0
+offset_right = 424.0
+offset_bottom = -38.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "Expandir Terreno"
@@ -97,20 +97,6 @@ layout_mode = 2
 [node name="BuildingsList" type="VBoxContainer" parent="UI/StorePanel/StoreUI"]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="TestSection" type="Label" parent="UI/StorePanel/StoreUI"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "--- PRUEBA SPRINT 3 ---"
-horizontal_alignment = 1
-
-[node name="SynergyInfo" type="RichTextLabel" parent="UI/StorePanel/StoreUI"]
-layout_mode = 2
-size_flags_vertical = 3
-text = "[b]Sinergias de Casa:[/b]
-[color=green]+5%[/color] con Taberna
-[color=green]+5%[/color] con Capilla  
-[color=red]-5%[/color] con Castillo"
 
 [node name="CancelPlacementButton" type="Button" parent="UI"]
 visible = false

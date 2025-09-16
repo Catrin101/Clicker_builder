@@ -1,4 +1,4 @@
-# Main.gd - Script de la escena principal - SPRINT 3 MEJORADO
+# Main.gd - Script de la escena principal - CORRECCIONES APLICADAS
 extends Node2D
 
 # Referencias a nodos UI
@@ -53,7 +53,6 @@ func _ready():
 	# Actualizar UI inicial
 	_update_ui()
 
-
 func _process(delta):
 	_update_ui()
 
@@ -90,17 +89,18 @@ func _on_click_button_pressed():
 	# Efecto visual mejorado para el clic
 	create_click_effect()
 
+# CORRECCIÓN: Función create_click_effect arreglada
 func create_click_effect():
 	# Crear efecto visual temporal del clic
 	var effect_label = Label.new()
 	effect_label.text = "+1"
 	effect_label.add_theme_font_size_override("font_size", 24)
-	effect_label.effect_label.add_theme_color_override("font_color", Color.GOLD)
+	effect_label.add_theme_color_override("font_color", Color.GOLD)  # CORRECCIÓN: Quitado el .effect_label duplicado
 	effect_label.position = click_button.global_position + Vector2(randf_range(-30, 30), -20)
 	
 	get_tree().current_scene.add_child(effect_label)
 	
-	# Animar el efecto
+	# CORRECCIÓN: Usar tween_delay correctamente
 	var tween = create_tween()
 	tween.parallel().tween_property(effect_label, "position:y", effect_label.position.y - 50, 1.0)
 	tween.parallel().tween_property(effect_label, "modulate:a", 0.0, 1.0)
@@ -121,8 +121,8 @@ func _on_expand_land_button_pressed():
 		hide_expansion_indicators()
 		print("❌ Modo expansión desactivado.")
 
+# CORRECCIÓN: Función create_instruction_popup arreglada
 func create_instruction_popup(message: String, color: Color):
-	# Crear popup de instrucciones temporal
 	var popup_label = Label.new()
 	popup_label.text = message
 	popup_label.add_theme_font_size_override("font_size", 18)
@@ -133,9 +133,8 @@ func create_instruction_popup(message: String, color: Color):
 	
 	get_tree().current_scene.add_child(popup_label)
 	
-	# Animar el popup
 	var tween = create_tween()
-	tween.tween_delay(3.0)
+	tween.tween_interval(3.0)  # Reemplaza el await con tween_interval
 	tween.tween_property(popup_label, "modulate:a", 0.0, 1.0)
 	tween.tween_callback(popup_label.queue_free)
 
