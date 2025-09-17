@@ -1,8 +1,11 @@
-# StoreUI.gd - Interfaz de la tienda de edificios - SPRINT 3 COMPLETO
+# StoreUI.gd - Interfaz de la tienda de edificios - VERSIÓN CON ESCENAS
 extends VBoxContainer
 
 # Referencias a nodos
 @onready var buildings_list: VBoxContainer = $BuildingsList
+
+# Precargar la escena del elemento de tienda
+@export var building_item_scene: PackedScene = preload("res://escenas/BuildingStoreItem.tscn")
 
 # Lista de edificios disponibles para comprar - EXPANDIDA
 var available_buildings = [
@@ -44,6 +47,9 @@ var available_buildings = [
 # Variable para seguimiento de categorías
 var current_category: String = "Todos"
 
+# Array para mantener referencias a los elementos de la tienda
+var building_items: Array[Panel] = []
+
 func _ready():
 	# Crear los elementos de la tienda
 	create_store_items()
@@ -55,8 +61,7 @@ func _ready():
 
 func create_store_items():
 	# Limpiar la lista actual
-	for child in buildings_list.get_children():
-		child.queue_free()
+	clear_building_items()
 	
 	# Crear secciones por categoría
 	var categories = {}
@@ -70,13 +75,22 @@ func create_store_items():
 	for category in categories:
 		# Añadir encabezado de categoría
 		if categories.size() > 1:  # Solo mostrar categorías si hay más de una
-			var category_label = create_category_header(category)
-			buildings_list.add_child(category_label)
+			var category_header = create_category_header(category)
+			buildings_list.add_child(category_header)
 		
 		# Añadir edificios de esta categoría
 		for building_data in categories[category]:
-			var building_item = create_building_item(building_data)
+			var building_item = create_building_item_from_scene(building_data)
 			buildings_list.add_child(building_item)
+			building_items.append(building_item)
+
+func clear_building_items():
+	# Limpiar referencias
+	building_items.clear()
+	
+	# Eliminar todos los hijos de la lista
+	for child in buildings_list.get_children():
+		child.queue_free()
 
 func create_category_header(category: String) -> Control:
 	var container = VBoxContainer.new()
@@ -102,93 +116,19 @@ func create_category_header(category: String) -> Control:
 	
 	return container
 
-func create_building_item(building_data: Dictionary) -> Control:
-	var container = VBoxContainer.new()
-	container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+func create_building_item_from_scene(building_data: Dictionary) -> Panel:
+	# Instanciar la escena del elemento de tienda
+	var building_item = building_item_scene.instantiate()
 	
-	# Contenedor principal horizontal
-	var main_container = HBoxContainer.new()
-	main_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# Configurar los datos del edificio
+	building_item.setup_building_data(building_data)
 	
-	# Panel de información izquierdo
-	var info_container = VBoxContainer.new()
-	info_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	info_container.size_flags_stretch_ratio = 2.5
+	# Conectar señal de compra
+	building_item.building_purchase_requested.connect(_on_building_purchase_requested)
 	
-	# Nombre del edificio
-	var name_label = Label.new()
-	name_label.text = building_data.name
-	name_label.add_theme_font_size_override("font_size", 14)
-	name_label.add_theme_color_override("font_color", Color.WHITE)
-	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	info_container.add_child(name_label)
-	
-	# Estadísticas
-	var stats_label = Label.new()
-	stats_label.text = "💰 " + str(building_data.cost) + " | ⚡ +" + str(building_data.pps) + " PPS"
-	stats_label.add_theme_font_size_override("font_size", 12)
-	stats_label.add_theme_color_override("font_color", Color.LIGHT_GRAY)
-	info_container.add_child(stats_label)
-	
-	# Descripción
-	var desc_label = Label.new()
-	desc_label.text = building_data.description
-	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 10)
-	desc_label.add_theme_color_override("font_color", Color.GRAY)
-	desc_label.custom_minimum_size.y = 40
-	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	info_container.add_child(desc_label)
-	
-	# Botón de compra
-	var button = Button.new()
-	button.text = "COMPRAR"
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	button.size_flags_stretch_ratio = 1.0
-	button.custom_minimum_size = Vector2(80, 60)
-	
-	# Añadir componentes al contenedor principal
-	main_container.add_child(info_container)
-	main_container.add_child(VSeparator.new())  # Separador vertical
-	main_container.add_child(button)
-	
-	# Panel contenedor con borde
-	var panel = Panel.new()
-	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	panel.custom_minimum_size.y = 80
-	panel.add_child(main_container)
-	
-	# Configurar márgenes
-	main_container.position = Vector2(5, 5)
-	main_container.size = panel.size - Vector2(10, 10)
-	main_container.anchors_preset = Control.PRESET_FULL_RECT
-	main_container.anchor_left = 0
-	main_container.anchor_top = 0
-	main_container.anchor_right = 1
-	main_container.anchor_bottom = 1
-	main_container.offset_left = 5
-	main_container.offset_top = 5
-	main_container.offset_right = -5
-	main_container.offset_bottom = -5
-	
-	# Separador entre elementos
-	var separator = HSeparator.new()
-	separator.custom_minimum_size.y = 8
-	
-	# Añadir al contenedor final
-	container.add_child(panel)
-	container.add_child(separator)
-	
-	# Conectar señal del botón
-	button.pressed.connect(_on_building_button_pressed.bind(building_data))
-	
-	# Guardar referencia al building_data en el botón
-	button.set_meta("building_data", building_data)
-	panel.set_meta("building_data", building_data)  # También en el panel
-	
-	return container
+	return building_item
 
-func _on_building_button_pressed(building_data: Dictionary):
+func _on_building_purchase_requested(building_data: Dictionary):
 	print("Edificio seleccionado: ", building_data.name)
 	
 	# Verificar si el jugador puede comprarlo
@@ -203,28 +143,64 @@ func _on_building_button_pressed(building_data: Dictionary):
 		show_purchase_feedback(building_data.name)
 		# Iniciar modo de colocación
 		GameManager.start_placing_mode(building_data.scene_path)
+		
+		# Encontrar el elemento que hizo la compra y mostrar feedback visual
+		for item in building_items:
+			if item.get_building_data() == building_data:
+				item.show_purchase_feedback(true, "✅ Comprado! Selecciona ubicación")
+				break
 
 func show_cannot_afford_feedback(building_name: String):
 	create_temporary_feedback("❌ No tienes suficientes puntos para " + building_name + "!", Color.RED)
+	
+	# También mostrar feedback en el elemento específico
+	for item in building_items:
+		var item_data = item.get_building_data()
+		if item_data.get("name", "") == building_name:
+			item.show_purchase_feedback(false, "❌ Sin fondos suficientes")
+			break
 
 func show_purchase_feedback(building_name: String):
 	create_temporary_feedback("✅ " + building_name + " comprado! Selecciona donde colocarlo.", Color.GREEN)
 
 func create_temporary_feedback(message: String, color: Color):
-	# Crear un panel de retroalimentación
+	# Crear un panel de retroalimentación temporal
 	var feedback_panel = Panel.new()
 	feedback_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	feedback_panel.custom_minimum_size.y = 50
+	feedback_panel.custom_minimum_size.y = 60
+	
+	# Estilo del panel
+	var style_box = StyleBoxFlat.new()
+	style_box.bg_color = Color(color.r, color.g, color.b, 0.2)
+	style_box.border_color = color
+	style_box.border_width_left = 2
+	style_box.border_width_right = 2
+	style_box.border_width_top = 2
+	style_box.border_width_bottom = 2
+	style_box.corner_radius_top_left = 8
+	style_box.corner_radius_top_right = 8
+	style_box.corner_radius_bottom_left = 8
+	style_box.corner_radius_bottom_right = 8
+	feedback_panel.add_theme_stylebox_override("panel", style_box)
+	
+	# Contenedor con márgenes
+	var margin_container = MarginContainer.new()
+	margin_container.anchors_preset = Control.PRESET_FULL_RECT
+	margin_container.add_theme_constant_override("margin_left", 10)
+	margin_container.add_theme_constant_override("margin_right", 10)
+	margin_container.add_theme_constant_override("margin_top", 10)
+	margin_container.add_theme_constant_override("margin_bottom", 10)
 	
 	var feedback_label = Label.new()
 	feedback_label.text = message
-	feedback_label.modulate = color
+	feedback_label.add_theme_color_override("font_color", color)
+	feedback_label.add_theme_font_size_override("font_size", 14)
 	feedback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	feedback_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	feedback_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	feedback_label.anchors_preset = Control.PRESET_FULL_RECT
 	
-	feedback_panel.add_child(feedback_label)
+	margin_container.add_child(feedback_label)
+	feedback_panel.add_child(margin_container)
 	
 	# Añadir temporalmente al inicio de la lista
 	buildings_list.add_child(feedback_panel)
@@ -232,18 +208,16 @@ func create_temporary_feedback(message: String, color: Color):
 	
 	# Crear tween para efecto de desvanecimiento
 	var tween = create_tween()
-	tween.tween_interval(1.5)  # Reemplaza tween_delay con tween_interval
+	tween.tween_interval(2.0)  # Mostrar por 2 segundos
 	tween.tween_property(feedback_panel, "modulate:a", 0.0, 1.0)
 	tween.tween_callback(feedback_panel.queue_free)
 
 func _on_points_changed(new_points: int):
-	# Actualizar el estado de los botones según los puntos disponibles
-	update_buttons_state()
+	# Los elementos individuales se actualizan automáticamente
+	# gracias a sus propias conexiones con GameManager
+	pass
 
 func _on_building_placement_started(building_scene: String):
-	# Deshabilitar todos los botones durante la colocación
-	set_buttons_enabled(false)
-	
 	# Cambiar el texto del título para indicar el modo de colocación
 	var title_label = get_parent().get_node("StoreTitle")
 	if title_label:
@@ -252,9 +226,6 @@ func _on_building_placement_started(building_scene: String):
 
 func _on_building_placement_cancelled():
 	print("Colocación de edificio cancelada.")
-	# Rehabilitar los botones
-	set_buttons_enabled(true)
-	update_buttons_state()
 	
 	# Restaurar el texto del título
 	var title_label = get_parent().get_node("StoreTitle")
@@ -262,48 +233,18 @@ func _on_building_placement_cancelled():
 		title_label.text = "TIENDA DE EDIFICIOS"
 		title_label.add_theme_color_override("font_color", Color.WHITE)
 
-func set_buttons_enabled(enabled: bool):
-	for container in buildings_list.get_children():
-		# Buscar el panel dentro del contenedor
-		for child in container.get_children():
-			if child is Panel and child.has_meta("building_data"):
-				var main_container = child.get_child(0)  # HBoxContainer
-				if main_container.get_child_count() >= 3:
-					var button = main_container.get_child(2)  # El botón es el tercer hijo
-					if button is Button:
-						button.disabled = !enabled
-
-func update_buttons_state():
-	for container in buildings_list.get_children():
-		# Buscar el panel dentro del contenedor
-		for child in container.get_children():
-			if child is Panel and child.has_meta("building_data"):
-				var building_data = child.get_meta("building_data")
-				var can_afford = GameManager.can_afford(building_data.cost)
-				
-				var main_container = child.get_child(0)  # HBoxContainer
-				if main_container.get_child_count() >= 3:
-					var button = main_container.get_child(2)  # El botón es el tercer hijo
-					if button is Button:
-						button.disabled = !can_afford
-						
-						# Cambiar el color según si puede comprarse o no
-						if can_afford:
-							button.modulate = Color.WHITE
-							button.text = "COMPRAR"
-						else:
-							button.modulate = Color(0.6, 0.6, 0.6, 1.0)
-							button.text = "SIN FONDOS"
-				
-				# Cambiar el color del panel también
-				if can_afford:
-					child.modulate = Color.WHITE
-				else:
-					child.modulate = Color(0.8, 0.8, 0.8, 1.0)
-
 # Función para añadir más edificios dinámicamente
 func add_building_to_store(building_data: Dictionary):
 	available_buildings.append(building_data)
+	# Recrear los elementos de la tienda
+	call_deferred("create_store_items")
+
+# Función para remover un edificio de la tienda
+func remove_building_from_store(building_name: String):
+	for i in range(available_buildings.size() - 1, -1, -1):
+		if available_buildings[i].get("name", "") == building_name:
+			available_buildings.remove_at(i)
+			break
 	# Recrear los elementos de la tienda
 	call_deferred("create_store_items")
 
@@ -312,12 +253,21 @@ func filter_by_category(category: String):
 	current_category = category
 	create_store_items()
 
+# Función para destacar un edificio específico
+func highlight_building(building_name: String):
+	for item in building_items:
+		var item_data = item.get_building_data()
+		if item_data.get("name", "") == building_name:
+			item.highlight_item()
+			break
+
 # Función para obtener estadísticas de la tienda
 func get_store_stats() -> Dictionary:
 	return {
 		"total_buildings": available_buildings.size(),
 		"categories": get_available_categories(),
-		"price_range": get_price_range()
+		"price_range": get_price_range(),
+		"affordable_buildings": count_affordable_buildings()
 	}
 
 func get_available_categories() -> Array:
@@ -338,3 +288,22 @@ func get_price_range() -> Dictionary:
 		"min": prices[0] if prices.size() > 0 else 0,
 		"max": prices[-1] if prices.size() > 0 else 0
 	}
+
+func count_affordable_buildings() -> int:
+	var count = 0
+	for building in available_buildings:
+		if GameManager.can_afford(building.cost):
+			count += 1
+	return count
+
+# Función para refrescar todos los elementos (útil para debugging)
+func refresh_all_items():
+	for item in building_items:
+		item.update_button_state()
+
+# Función para obtener un edificio por nombre
+func get_building_by_name(building_name: String) -> Dictionary:
+	for building in available_buildings:
+		if building.get("name", "") == building_name:
+			return building
+	return {}

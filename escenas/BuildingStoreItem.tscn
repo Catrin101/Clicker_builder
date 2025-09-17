@@ -1,0 +1,91 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkh6l8cht33rn"]
+
+[ext_resource type="Script" uid="uid://bfa3m22vanl8t" path="res://scripts/BuildingStoreItem.gd" id="1_store_item"]
+
+[node name="BuildingStoreItem" type="Panel"]
+custom_minimum_size = Vector2(0, 100)
+size_flags_horizontal = 3
+script = ExtResource("1_store_item")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="InfoContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.5
+
+[node name="BuildingName" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Nombre del Edificio"
+autowrap_mode = 3
+
+[node name="StatsContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/InfoContainer"]
+layout_mode = 2
+
+[node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_font_sizes/font_size = 12
+text = "💰 999"
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/HBoxContainer/InfoContainer/StatsContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="PPSLabel" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer/StatsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0.5, 1)
+theme_override_font_sizes/font_size = 12
+text = "⚡ +5.0 PPS"
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 12
+text = "Descripción del edificio aquí..."
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="VSeparator2" type="VSeparator" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+
+[node name="ButtonContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PurchaseButton" type="Button" parent="MarginContainer/HBoxContainer/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 10
+text = "COMPRAR"
+
+[node name="HSeparator" type="HSeparator" parent="."]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 10.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 0
