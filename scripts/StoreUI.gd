@@ -1,4 +1,4 @@
-# StoreUI.gd - Interfaz de la tienda de edificios - VERSIÓN CON ESCENAS
+# StoreUI.gd - Interfaz de la tienda de edificios - VERSIÓN CORREGIDA
 extends VBoxContainer
 
 # Referencias a nodos
@@ -12,7 +12,7 @@ var available_buildings = [
 	# Edificios Esenciales
 	{
 		"name": "Casa del Aldeano",
-		"scene_path": "res://escenas/House.tscn",
+		"scene_path": "res://escenas/Estructuras/House.tscn",
 		"cost": 50,
 		"pps": 0.5,
 		"description": "Un hogar modesto para tus aldeanos. Es la base de todo asentamiento.",
@@ -20,7 +20,7 @@ var available_buildings = [
 	},
 	{
 		"name": "La Taberna del Ciervo",
-		"scene_path": "res://escenas/Tavern.tscn",
+		"scene_path": "res://escenas/Estructuras/Tavern.tscn",
 		"cost": 250,
 		"pps": 2.0,
 		"description": "Un animado punto de encuentro para los aldeanos.",
@@ -28,7 +28,7 @@ var available_buildings = [
 	},
 	{
 		"name": "La Posada del Caminante",
-		"scene_path": "res://escenas/Inn.tscn",
+		"scene_path": "res://escenas/Estructuras/Inn.tscn",
 		"cost": 400,
 		"pps": 3.5,
 		"description": "Un lugar para descansar a los viajeros cansados.",
@@ -36,12 +36,52 @@ var available_buildings = [
 	},
 	{
 		"name": "Castillo",
-		"scene_path": "res://escenas/Castle.tscn",
+		"scene_path": "res://escenas/Estructuras/Castle.tscn",
 		"cost": 2000,
 		"pps": 5.0,
 		"description": "El corazón de tu reino. Protege y administra tu pueblo.",
 		"category": "Esenciales"
-	}
+	},
+	{
+		"name": "Capilla de la Luz",
+		"scene_path": "res://escenas/Estructuras/Chapel.tscn",
+		"cost": 800,
+		"pps": 2.5,
+		"description": "Un lugar de oración y reflexión que satisface las necesidades espirituales de tu gente, mejorando la moral y la estabilidad general del pueblo.",
+		"category": "Desarrollo y Satisfaccion"
+	},
+	{
+		"name": "Torre del Reloj",
+		"scene_path": "res://escenas/Estructuras/Clock.tscn",
+		"cost": 1500,
+		"pps": 4.0,
+		"description": "El pináculo de la ingeniería local. La Torre del Reloj mejora la coordinación de los trabajadores y es un símbolo del progreso de tu pueblo.",
+		"category": "Desarrollo y Satisfaccion"
+	},
+	{
+		"name": "Villa del Comerciante",
+		"scene_path": "res://escenas/Estructuras/Villa.tscn",
+		"cost": 3000,
+		"pps": 6.0,
+		"description": "Una residencia opulenta para los más ricos de la sociedad. La villa atrae a comerciantes influyentes y eleva el prestigio de tu pueblo.",
+		"category": "Lujo y Unicos"
+	},
+	{
+		"name": "Cabaña de Techo de Paja",
+		"scene_path": "res://escenas/Estructuras/Thayched.tscn",
+		"cost": 30,
+		"pps": 0.25,
+		"description": "Una vivienda rústica y primitiva. Aunque es más económica, su construcción es menos eficiente para el crecimiento de la población.",
+		"category": "Lujo y Unicos"
+	},
+	{
+		"name": "Casa del Árbol de Sylvan",
+		"scene_path": "res://escenas/Estructuras/TreeHouse.tscn",
+		"cost": 5000,
+		"pps": 8.0,
+		"description": "Un edificio mágico y único, escondido en la cima de los árboles. Proporciona una gran cantidad de monedas por su singularidad y encanto.",
+		"category": "Lujo y Unicos"
+	},
 ]
 
 # Variable para seguimiento de categorías
@@ -50,7 +90,14 @@ var current_category: String = "Todos"
 # Array para mantener referencias a los elementos de la tienda
 var building_items: Array[Panel] = []
 
+# Referencia al panel de feedback activo (solo uno a la vez)
+var active_feedback_panel: Control = null
+
 func _ready():
+	# Configurar el contenedor principal
+	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	size_flags_vertical = Control.SIZE_EXPAND_FILL
+	
 	# Crear los elementos de la tienda
 	create_store_items()
 	
@@ -94,6 +141,7 @@ func clear_building_items():
 
 func create_category_header(category: String) -> Control:
 	var container = VBoxContainer.new()
+	container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
 	# Separador superior
 	var separator_top = HSeparator.new()
@@ -120,8 +168,15 @@ func create_building_item_from_scene(building_data: Dictionary) -> Panel:
 	# Instanciar la escena del elemento de tienda
 	var building_item = building_item_scene.instantiate()
 	
-	# Configurar los datos del edificio
-	building_item.setup_building_data(building_data)
+	# Configurar size flags para que se ajuste correctamente
+	building_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	building_item.custom_minimum_size = Vector2(0, 100)
+	
+	# IMPORTANTE: Llamar a _ready primero antes de setup_building_data
+	# Esto se hace automáticamente cuando se añade al árbol de nodos
+	
+	# Configurar los datos del edificio usando call_deferred para asegurar que _ready se ejecute primero
+	building_item.call_deferred("setup_building_data", building_data)
 	
 	# Conectar señal de compra
 	building_item.building_purchase_requested.connect(_on_building_purchase_requested)
@@ -164,6 +219,10 @@ func show_purchase_feedback(building_name: String):
 	create_temporary_feedback("✅ " + building_name + " comprado! Selecciona donde colocarlo.", Color.GREEN)
 
 func create_temporary_feedback(message: String, color: Color):
+	# Remover feedback anterior si existe
+	if active_feedback_panel and is_instance_valid(active_feedback_panel):
+		active_feedback_panel.queue_free()
+	
 	# Crear un panel de retroalimentación temporal
 	var feedback_panel = Panel.new()
 	feedback_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -202,15 +261,23 @@ func create_temporary_feedback(message: String, color: Color):
 	margin_container.add_child(feedback_label)
 	feedback_panel.add_child(margin_container)
 	
-	# Añadir temporalmente al inicio de la lista
-	buildings_list.add_child(feedback_panel)
-	buildings_list.move_child(feedback_panel, 0)
+	# CORRECCIÓN: Añadir al contenedor principal (VBoxContainer) en lugar de buildings_list
+	# para que esté dentro del panel visible
+	add_child(feedback_panel)
+	move_child(feedback_panel, 2)  # Posición después del título y separador
+	
+	# Guardar referencia al panel activo
+	active_feedback_panel = feedback_panel
 	
 	# Crear tween para efecto de desvanecimiento
 	var tween = create_tween()
-	tween.tween_interval(2.0)  # Mostrar por 2 segundos
+	tween.tween_interval(2.5)  # Mostrar por 2.5 segundos
 	tween.tween_property(feedback_panel, "modulate:a", 0.0, 1.0)
-	tween.tween_callback(feedback_panel.queue_free)
+	tween.tween_callback(func(): 
+		if active_feedback_panel == feedback_panel:
+			active_feedback_panel = null
+		feedback_panel.queue_free()
+	)
 
 func _on_points_changed(new_points: int):
 	# Los elementos individuales se actualizan automáticamente
@@ -307,3 +374,9 @@ func get_building_by_name(building_name: String) -> Dictionary:
 		if building.get("name", "") == building_name:
 			return building
 	return {}
+
+# Función para limpiar feedback activo (útil para transiciones)
+func clear_active_feedback():
+	if active_feedback_panel and is_instance_valid(active_feedback_panel):
+		active_feedback_panel.queue_free()
+		active_feedback_panel = null

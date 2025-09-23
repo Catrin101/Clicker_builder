@@ -128,7 +128,7 @@ func create_instruction_popup(message: String, color: Color):
 	popup_label.add_theme_font_size_override("font_size", 18)
 	popup_label.add_theme_color_override("font_color", color)
 	popup_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	popup_label.position = Vector2(get_viewport().size.x / 2 - 200, 100)
+	popup_label.position = Vector2(get_viewport().size.x / 2 - 500, 100)
 	popup_label.size = Vector2(400, 50)
 	
 	get_tree().current_scene.add_child(popup_label)

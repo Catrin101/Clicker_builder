@@ -1,4 +1,4 @@
-# BuildingStoreItem.gd - Elemento individual de la tienda de edificios
+# BuildingStoreItem.gd - Elemento individual de la tienda de edificios - VERSIÓN CORREGIDA
 extends Panel
 
 # Referencias a nodos
@@ -11,10 +11,17 @@ extends Panel
 # Datos del edificio
 var building_data: Dictionary = {}
 
+# Variable para controlar si ya se inicializó
+var is_initialized: bool = false
+
 # Señal para cuando se presiona el botón de compra
 signal building_purchase_requested(building_data: Dictionary)
 
 func _ready():
+	# Configurar size flags para que se ajuste correctamente
+	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	custom_minimum_size = Vector2(0, 100)
+	
 	# Conectar señal del botón de compra
 	if purchase_button:
 		purchase_button.pressed.connect(_on_purchase_button_pressed)
@@ -23,15 +30,26 @@ func _ready():
 	GameManager.points_changed.connect(_on_points_changed)
 	GameManager.building_placement_started.connect(_on_building_placement_started)
 	GameManager.building_placement_cancelled.connect(_on_building_placement_cancelled)
+	
+	# Marcar como inicializado
+	is_initialized = true
+	
+	# Si ya tenemos datos del edificio, actualizar la pantalla
+	if not building_data.is_empty():
+		update_display()
+		update_button_state()
 
 # Configurar los datos del edificio
 func setup_building_data(data: Dictionary):
 	building_data = data
-	update_display()
-	update_button_state()
+	
+	# Si ya estamos listos, actualizar inmediatamente
+	if is_initialized:
+		update_display()
+		update_button_state()
 
 func update_display():
-	if building_data.is_empty():
+	if building_data.is_empty() or not is_initialized:
 		return
 	
 	# Actualizar nombre
@@ -52,7 +70,7 @@ func update_display():
 		description_label.text = building_data.get("description", "Sin descripción")
 
 func update_button_state():
-	if not purchase_button or building_data.is_empty():
+	if not purchase_button or building_data.is_empty() or not is_initialized:
 		return
 	
 	var can_afford = GameManager.can_afford(building_data.get("cost", 0))
@@ -93,11 +111,17 @@ func _on_building_placement_cancelled():
 
 # Funciones para efectos visuales
 func highlight_item():
+	if not is_initialized:
+		return
+		
 	var tween = create_tween()
 	tween.tween_property(self, "modulate", Color(1.2, 1.2, 1.0, 1.0), 0.2)
 	tween.tween_property(self, "modulate", Color.WHITE, 0.2)
 
 func show_purchase_feedback(success: bool, message: String = ""):
+	if not is_initialized or not purchase_button:
+		return
+		
 	var color = Color.GREEN if success else Color.RED
 	var feedback_text = message if not message.is_empty() else ("✅ Comprado!" if success else "❌ Error!")
 	

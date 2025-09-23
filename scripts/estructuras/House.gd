@@ -19,4 +19,3 @@ func _ready():
 	super._ready()
 	
 	print("Casa inicializada - Nombre: ", building_name, ", PPS: ", points_per_second, ", Sinergias: ", synergies)
-	
