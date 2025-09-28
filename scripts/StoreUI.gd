@@ -43,14 +43,6 @@ var available_buildings = [
 		"category": "Esenciales"
 	},
 	{
-		"name": "Base Militar",
-		"scene_path": "res://escenas/Estructuras/BaseMilitar.tscn",
-		"cost": 2500,
-		"pps": 5.0,
-		"description": "Toda gran naacon requiere de un cuerpo militar que le defienda.",
-		"category": "Desarrollo y Satisfaccion"
-	},
-	{
 		"name": "Capilla de la Luz",
 		"scene_path": "res://escenas/Estructuras/Chapel.tscn",
 		"cost": 800,
