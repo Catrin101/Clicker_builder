@@ -1,4 +1,4 @@
-# Building.gd - Clase base para todos los edificios - CORREGIDA
+# Building.gd - Clase base para todos los edificios - CORREGIDA COMPLETAMENTE
 class_name Building
 extends Node2D
 
@@ -28,8 +28,8 @@ var total_synergy_multiplier: float = 1.0
 @onready var up_synergy: Label = $SynergyLabels/UpSynergy
 @onready var down_synergy: Label = $SynergyLabels/DownSynergy
 
-# Tween para animaciones
-var tween: Tween
+# Tween para animaciones - CORRECCIÓN: Renombrado para evitar conflictos
+var animation_tween: Tween
 
 func _ready():
 	# Conectar señales del área
@@ -48,30 +48,30 @@ func _on_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int):
 			_on_building_clicked()
 
 func _on_mouse_entered():
-	if tween:
-		tween.kill()
-	tween = create_tween()
-	tween.tween_property(self, "scale", Vector2(1.1, 1.1), 0.2)
+	if animation_tween:
+		animation_tween.kill()
+	animation_tween = create_tween()
+	animation_tween.tween_property(self, "scale", Vector2(1.1, 1.1), 0.2)
 	
 func _on_mouse_exited():
-	if tween:
-		tween.kill()
-	tween = create_tween()
-	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.2)
+	if animation_tween:
+		animation_tween.kill()
+	animation_tween = create_tween()
+	animation_tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.2)
 
 func _on_building_clicked():
 	print("Edificio clickeado: ", building_name, " en (", grid_x, ", ", grid_y, ")")
 	print("  PPS base: ", points_per_second, ", PPS total: ", get_total_points_per_second())
 	print("  Multiplicador de sinergia: ", total_synergy_multiplier)
 
-# Función para iniciar la animación de balanceo
+# CORRECCIÓN: Función para iniciar la animación de balanceo arreglada
 func start_bobble_animation():
-	if not tween:
-		tween = create_tween()
+	if not animation_tween:
+		animation_tween = create_tween()
 	
-	tween.set_loops()
-	tween.tween_property(sprite, "rotation", deg_to_rad(2), 2.0)
-	tween.tween_property(sprite, "rotation", deg_to_rad(-2), 2.0)
+	animation_tween.set_loops()
+	animation_tween.tween_property(sprite, "rotation", deg_to_rad(2), 2.0)
+	animation_tween.tween_property(sprite, "rotation", deg_to_rad(-2), 2.0)
 
 # Función principal para calcular sinergias - CORREGIDA
 func calculate_synergies():

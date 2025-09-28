@@ -1,0 +1,12 @@
+[gd_scene load_steps=4 format=3 uid="uid://tf52onxrhmin"]
+
+[ext_resource type="PackedScene" uid="uid://cdnwu4mybwp03" path="res://escenas/Estructuras/Building.tscn" id="1_3cp20"]
+[ext_resource type="Script" uid="uid://qj1lu3oxb8st" path="res://scripts/estructuras/Villa.gd" id="2_3cp20"]
+[ext_resource type="Texture2D" uid="uid://rltnntwfajdv" path="res://sprites/Estructuras/Edificios/villa.png" id="3_bvyfp"]
+
+[node name="Villa" instance=ExtResource("1_3cp20")]
+script = ExtResource("2_3cp20")
+
+[node name="Sprite2D" parent="." index="0"]
+scale = Vector2(0.5625, 0.596774)
+texture = ExtResource("3_bvyfp")

@@ -1,6 +1,5 @@
-[gd_scene load_steps=5 format=3 uid="uid://vsmgd0bgc1uv"]
+[gd_scene load_steps=4 format=3 uid="uid://vsmgd0bgc1uv"]
 
-[ext_resource type="Theme" uid="uid://d2asa51h3f7ie" path="res://recursos/Interfas.tres" id="1_d7u15"]
 [ext_resource type="Script" uid="uid://cmmhxy0kw10fr" path="res://scripts/Main.gd" id="1_jumxm"]
 [ext_resource type="Script" uid="uid://cciqx3hwclx6s" path="res://scripts/GridManager.gd" id="2_26pgj"]
 [ext_resource type="Script" uid="uid://00gckuotu12e" path="res://scripts/StoreUI.gd" id="4_store"]
@@ -14,102 +13,98 @@ script = ExtResource("2_26pgj")
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Pontis" type="Panel" parent="UI"]
-offset_left = 252.0
-offset_right = 445.0
-offset_bottom = 70.0
+offset_left = 331.0
+offset_right = 524.0
+offset_bottom = 79.0
 metadata/_edit_group_ = true
 
 [node name="PointsDisplay" type="Label" parent="UI/Pontis"]
 layout_mode = 0
 offset_left = 4.0
-offset_top = -3.0
+offset_top = 6.0
 offset_right = 185.0
-offset_bottom = 39.0
+offset_bottom = 48.0
 text = "Puntos: 0"
 
 [node name="PointsPerSecondDisplay" type="Label" parent="UI/Pontis"]
 layout_mode = 0
 offset_left = 4.0
-offset_top = 28.0
+offset_top = 37.0
 offset_right = 185.0
-offset_bottom = 70.0
+offset_bottom = 79.0
 text = "PPS: 0.0"
 
 [node name="ClickButton" type="Button" parent="UI"]
-anchors_preset = 3
-anchor_left = 1.0
+anchors_preset = 7
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -338.0
-offset_top = -105.0
-offset_right = -16.0
-offset_bottom = -21.0
-grow_horizontal = 0
+offset_left = -352.0
+offset_top = -119.0
+offset_right = -30.0
+offset_bottom = -38.0
+grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme = ExtResource("1_d7u15")
 text = "Clic (+1)"
 
 [node name="ExpandLandButton" type="Button" parent="UI"]
-anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 0.813
-anchor_right = 1.0
-anchor_bottom = 0.813
-offset_left = -383.0
-offset_top = -40.7
-offset_right = -12.0
-offset_bottom = 40.3
-grow_horizontal = 0
-grow_vertical = 2
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 53.0
+offset_top = -119.0
+offset_right = 424.0
+offset_bottom = -38.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "Expandir Terreno"
 
 [node name="StorePanel" type="Panel" parent="UI"]
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_right = 250.0
+offset_right = 326.0
 grow_vertical = 2
 
-[node name="StoreUI" type="VBoxContainer" parent="UI/StorePanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 4.0
-offset_top = 10.0
-offset_right = -4.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="StoreScrollContainer" type="ScrollContainer" parent="UI/StorePanel"]
+layout_mode = 0
+offset_right = 325.0
+offset_bottom = 902.0
+horizontal_scroll_mode = 0
+
+[node name="StoreUI" type="VBoxContainer" parent="UI/StorePanel/StoreScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("4_store")
 
-[node name="StoreTitle" type="Label" parent="UI/StorePanel/StoreUI"]
+[node name="StoreTitle" type="Label" parent="UI/StorePanel/StoreScrollContainer/StoreUI"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 22
 text = "TIENDA DE EDIFICIOS"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="UI/StorePanel/StoreUI"]
+[node name="HSeparator" type="HSeparator" parent="UI/StorePanel/StoreScrollContainer/StoreUI"]
 layout_mode = 2
 
-[node name="BuildingsList" type="VBoxContainer" parent="UI/StorePanel/StoreUI"]
+[node name="BuildingsList" type="VBoxContainer" parent="UI/StorePanel/StoreScrollContainer/StoreUI"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="TestSection" type="Label" parent="UI/StorePanel/StoreUI"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "--- PRUEBA SPRINT 2 ---"
-horizontal_alignment = 1
-
-[node name="SynergyInfo" type="RichTextLabel" parent="UI/StorePanel/StoreUI"]
-layout_mode = 2
-size_flags_vertical = 3
-text = "[b]Sinergias de Casa:[/b]
-[color=green]+5%[/color] con Taberna
-[color=green]+5%[/color] con Capilla  
-[color=red]-5%[/color] con Castillo"
+[node name="CancelPlacementButton" type="Button" parent="UI"]
+visible = false
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -201.0
+offset_top = 14.0
+offset_right = -13.0
+offset_bottom = 89.0
+grow_horizontal = 0
+text = "Cancelar"
 
 [node name="Camera2D" type="Camera2D" parent="."]

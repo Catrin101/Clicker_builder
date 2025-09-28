@@ -6,6 +6,7 @@ var player_points: int = 10  # Empezamos con 10 puntos para poder comprar el pri
 var total_points_per_second: float = 0.0
 var is_placing_building: bool = false
 var building_to_place: String = ""  # Ruta de la escena del edificio a colocar
+var is_placing_mode: bool = false
 
 # Señales para comunicar cambios
 signal points_changed(new_points: int)
@@ -68,6 +69,7 @@ func recalculate_total_points_per_second():
 # Función para iniciar el modo de colocación de edificios
 func start_placing_mode(building_scene_path: String):
 	is_placing_building = true
+	is_placing_mode = true
 	building_to_place = building_scene_path
 	building_placement_started.emit(building_scene_path)
 	print("Modo colocación iniciado para: ", building_scene_path)
@@ -75,6 +77,7 @@ func start_placing_mode(building_scene_path: String):
 # Función para cancelar el modo de colocación
 func cancel_placing_mode():
 	is_placing_building = false
+	is_placing_mode = false
 	building_to_place = ""
 	building_placement_cancelled.emit()
 	print("Modo colocación cancelado")

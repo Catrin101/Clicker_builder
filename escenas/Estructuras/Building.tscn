@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cdnwu4mybwp03"]
 
-[ext_resource type="Script" uid="uid://1a2y7ybflwg8" path="res://scripts/Building.gd" id="1_building"]
+[ext_resource type="Script" uid="uid://1a2y7ybflwg8" path="res://scripts/estructuras/Building.gd" id="1_building"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_building"]
 size = Vector2(120, 120)
@@ -18,47 +18,56 @@ shape = SubResource("RectangleShape2D_building")
 [node name="SynergyLabels" type="Node2D" parent="."]
 
 [node name="RightSynergy" type="Label" parent="SynergyLabels"]
+z_index = 5
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 60.0
-offset_top = -12.0
-offset_right = 100.0
-offset_bottom = 12.0
+offset_left = 50.0
+offset_top = -14.0
+offset_right = 90.0
+offset_bottom = 14.0
+grow_horizontal = 0
+grow_vertical = 2
 horizontal_alignment = 1
 
 [node name="LeftSynergy" type="Label" parent="SynergyLabels"]
+z_index = 5
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -12.0
-offset_right = -60.0
-offset_bottom = 12.0
+offset_left = -90.0
+offset_top = -14.0
+offset_right = -50.0
+offset_bottom = 14.0
+grow_vertical = 2
 horizontal_alignment = 1
 
 [node name="UpSynergy" type="Label" parent="SynergyLabels"]
+z_index = 5
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -20.0
-offset_top = -70.0
+offset_top = -60.0
 offset_right = 20.0
-offset_bottom = -46.0
+offset_bottom = -32.0
 horizontal_alignment = 1
 
 [node name="DownSynergy" type="Label" parent="SynergyLabels"]
+z_index = 5
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -20.0
-offset_top = 46.0
-offset_right = 20.0
-offset_bottom = 70.0
+offset_left = -14.0
+offset_top = 40.0
+offset_right = 26.0
+offset_bottom = 68.0
+grow_horizontal = 2
+grow_vertical = 0
 horizontal_alignment = 1
 
 [node name="AnimationTween" type="Node" parent="."]

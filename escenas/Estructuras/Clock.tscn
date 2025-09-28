@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://3f7h3k235q1b"]
+
+[ext_resource type="PackedScene" uid="uid://cdnwu4mybwp03" path="res://escenas/Estructuras/Building.tscn" id="1_rgdx1"]
+[ext_resource type="Script" uid="uid://pymq27fee3d2" path="res://scripts/estructuras/Clock.gd" id="2_rgdx1"]
+[ext_resource type="Texture2D" uid="uid://c4uh65bot618p" path="res://sprites/Estructuras/Edificios/clock.png" id="3_rgdx1"]
+
+[node name="Clock" instance=ExtResource("1_rgdx1")]
+script = ExtResource("2_rgdx1")
+
+[node name="Sprite2D" parent="." index="0"]
+position = Vector2(0, -13)
+scale = Vector2(0.5625, 0.596774)
+texture = ExtResource("3_rgdx1")

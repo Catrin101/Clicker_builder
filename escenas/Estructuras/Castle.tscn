@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://dngskrsxvtbva"]
+
+[ext_resource type="PackedScene" uid="uid://cdnwu4mybwp03" path="res://escenas/Estructuras/Building.tscn" id="1_house"]
+[ext_resource type="Script" uid="uid://dntrx7rossq0" path="res://scripts/estructuras/Castle.gd" id="2_ugmsh"]
+[ext_resource type="Texture2D" uid="uid://r03owcq2penx" path="res://sprites/Estructuras/Edificios/castle.png" id="3_mtxub"]
+
+[node name="Castle" instance=ExtResource("1_house")]
+script = ExtResource("2_ugmsh")
+
+[node name="Sprite2D" parent="." index="0"]
+position = Vector2(0, -25)
+scale = Vector2(0.331522, 0.347826)
+texture = ExtResource("3_mtxub")
