@@ -1,0 +1,12 @@
+[gd_scene load_steps=4 format=3 uid="uid://du00i6rdwlorv"]
+
+[ext_resource type="PackedScene" uid="uid://cdnwu4mybwp03" path="res://escenas/Estructuras/Building.tscn" id="1_lprcm"]
+[ext_resource type="Script" uid="uid://h0bjwhw48s67" path="res://scripts/estructuras/BaseMilitar.gd" id="2_lprcm"]
+[ext_resource type="Texture2D" uid="uid://dcuv41acyaerx" path="res://sprites/Estructuras/Edificios/Base Militar.png" id="3_6wea1"]
+
+[node name="BaseMilitar" instance=ExtResource("1_lprcm")]
+script = ExtResource("2_lprcm")
+
+[node name="Sprite2D" parent="." index="0"]
+scale = Vector2(0.280632, 0.364641)
+texture = ExtResource("3_6wea1")

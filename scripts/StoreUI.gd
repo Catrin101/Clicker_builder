@@ -59,6 +59,14 @@ var available_buildings = [
 		"category": "Desarrollo y Satisfaccion"
 	},
 	{
+		"name": "Base Militar",
+		"scene_path": "res://escenas/Estructuras/BaseMilitar.tscn",
+		"cost": 2500,
+		"pps": 6.0,
+		"description": "Todo ciudad en crecimiento nesesita poteccion de una buena Milicia",
+		"category": "Desarrollo y Satisfaccion"
+	},
+	{
 		"name": "Villa del Comerciante",
 		"scene_path": "res://escenas/Estructuras/Villa.tscn",
 		"cost": 3000,
