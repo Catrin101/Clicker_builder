@@ -1,4 +1,4 @@
-# BuildingStoreItem.gd - Elemento individual de la tienda de edificios - VERSIÓN CON AJUSTE DINÁMICO
+# BuildingStoreItem.gd - Elemento individual de la tienda de edificios - VERSIÓN CORREGIDA
 extends Panel
 
 # Referencias a nodos
@@ -20,10 +20,7 @@ signal building_purchase_requested(building_data: Dictionary)
 func _ready():
 	# Configurar size flags para que se ajuste correctamente
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	size_flags_vertical = Control.SIZE_SHRINK_CENTER  # Cambiar a shrink center para ajuste dinámico
-	
-	# Remover custom_minimum_size fijo para permitir ajuste dinámico
-	custom_minimum_size = Vector2(0, 0)
+	custom_minimum_size = Vector2(0, 100)
 	
 	# Conectar señal del botón de compra
 	if purchase_button:
@@ -41,7 +38,6 @@ func _ready():
 	if not building_data.is_empty():
 		update_display()
 		update_button_state()
-		call_deferred("adjust_panel_size")
 
 # Configurar los datos del edificio
 func setup_building_data(data: Dictionary):
@@ -51,7 +47,6 @@ func setup_building_data(data: Dictionary):
 	if is_initialized:
 		update_display()
 		update_button_state()
-		call_deferred("adjust_panel_size")
 
 func update_display():
 	if building_data.is_empty() or not is_initialized:
@@ -70,55 +65,9 @@ func update_display():
 		var pps_value = building_data.get("pps", 0.0)
 		pps_label.text = "⚡ +" + str(pps_value) + " PPS"
 	
-	# Actualizar descripción con ajuste automático
+	# Actualizar descripción
 	if description_label:
-		var description_text = building_data.get("description", "Sin descripción")
-		description_label.text = description_text
-		
-		# Configurar el label para que se ajuste correctamente
-		description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		description_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-
-# Nueva función para ajustar el tamaño del panel dinámicamente
-func adjust_panel_size():
-	if not is_initialized or not description_label:
-		return
-	
-	# Esperar un frame para que el texto se procese
-	await get_tree().process_frame
-	
-	# Calcular la altura necesaria basada en el contenido del description_label
-	var font = description_label.get_theme_font("font")
-	var font_size = description_label.get_theme_font_size("font_size")
-	
-	if not font:
-		font = ThemeDB.fallback_font
-	if font_size <= 0:
-		font_size = 12
-	
-	# Obtener el ancho disponible para el texto
-	var available_width = description_label.size.x
-	if available_width <= 0:
-		available_width = 200  # Valor por defecto
-	
-	# Calcular las líneas necesarias
-	var text_lines = font.get_multiline_string_size(
-		description_label.text, 
-		HORIZONTAL_ALIGNMENT_LEFT, 
-		available_width, 
-		font_size
-	)
-	
-	# Calcular altura mínima necesaria
-	var base_height = 60  # Altura base para nombre, costo, PPS, botón
-	var description_height = max(text_lines.y, 30)  # Mínimo 30px para descripción
-	var total_height = base_height + description_height + 20  # +20 para márgenes
-	
-	# Aplicar altura mínima calculada
-	custom_minimum_size.y = max(total_height, 100)  # Mínimo absoluto de 100px
-	
-	# Forzar actualización del layout
-	queue_redraw()
+		description_label.text = building_data.get("description", "Sin descripción")
 
 func update_button_state():
 	if not purchase_button or building_data.is_empty() or not is_initialized:
@@ -200,8 +149,3 @@ func get_building_data() -> Dictionary:
 # Función para verificar si puede comprarse
 func can_purchase() -> bool:
 	return GameManager.can_afford(building_data.get("cost", 0)) and not GameManager.is_placing_mode
-
-# Función que se llama cuando el tamaño del panel cambia
-func _on_resized():
-	if is_initialized:
-		call_deferred("adjust_panel_size")

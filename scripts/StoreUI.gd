@@ -1,4 +1,4 @@
-# StoreUI.gd - Interfaz de la tienda de edificios - VERSIÓN CORREGIDA CON SEPARACIÓN
+# StoreUI.gd - Interfaz de la tienda de edificios - VERSIÓN CORREGIDA
 extends VBoxContainer
 
 # Referencias a nodos
@@ -47,7 +47,7 @@ var available_buildings = [
 		"scene_path": "res://escenas/Estructuras/Chapel.tscn",
 		"cost": 800,
 		"pps": 2.5,
-		"description": "Un lugar de oración y reflexión que satisface las necesidades espirituales de tu gente.",
+		"description": "Un lugar de oración y reflexión que satisface las necesidades espirituales de tu gente, mejorando la moral y la estabilidad general del pueblo.",
 		"category": "Desarrollo y Satisfaccion"
 	},
 	{
@@ -55,7 +55,7 @@ var available_buildings = [
 		"scene_path": "res://escenas/Estructuras/Clock.tscn",
 		"cost": 1500,
 		"pps": 4.0,
-		"description": "El pináculo de la ingeniería local. La Torre del Reloj mejora la coordinación de los trabajadores",
+		"description": "El pináculo de la ingeniería local. La Torre del Reloj mejora la coordinación de los trabajadores y es un símbolo del progreso de tu pueblo.",
 		"category": "Desarrollo y Satisfaccion"
 	},
 	{
@@ -63,7 +63,7 @@ var available_buildings = [
 		"scene_path": "res://escenas/Estructuras/Villa.tscn",
 		"cost": 3000,
 		"pps": 6.0,
-		"description": "Una residencia opulenta para los más ricos de la sociedad.",
+		"description": "Una residencia opulenta para los más ricos de la sociedad. La villa atrae a comerciantes influyentes y eleva el prestigio de tu pueblo.",
 		"category": "Lujo y Unicos"
 	},
 	{
@@ -71,7 +71,7 @@ var available_buildings = [
 		"scene_path": "res://escenas/Estructuras/Thayched.tscn",
 		"cost": 30,
 		"pps": 0.25,
-		"description": "Una vivienda rústica y primitiva. Aunque es más económica.",
+		"description": "Una vivienda rústica y primitiva. Aunque es más económica, su construcción es menos eficiente para el crecimiento de la población.",
 		"category": "Lujo y Unicos"
 	},
 	{
@@ -79,7 +79,7 @@ var available_buildings = [
 		"scene_path": "res://escenas/Estructuras/TreeHouse.tscn",
 		"cost": 5000,
 		"pps": 8.0,
-		"description": "Un edificio mágico y único, escondido en la cima de los árboles.",
+		"description": "Un edificio mágico y único, escondido en la cima de los árboles. Proporciona una gran cantidad de monedas por su singularidad y encanto.",
 		"category": "Lujo y Unicos"
 	},
 ]
@@ -94,13 +94,9 @@ var building_items: Array[Panel] = []
 var active_feedback_panel: Control = null
 
 func _ready():
-	# Configurar el contenedor principal con separación mejorada
+	# Configurar el contenedor principal
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	add_theme_constant_override("separation", 5)  # Separación entre elementos hijos
-	
-	# Asegurar que buildings_list tenga separación adecuada
-	if buildings_list:
-		buildings_list.add_theme_constant_override("separation", 8)  # Separación entre BuildingStoreItems
+	size_flags_vertical = Control.SIZE_EXPAND_FILL
 	
 	# Crear los elementos de la tienda
 	create_store_items()
@@ -123,31 +119,17 @@ func create_store_items():
 		categories[category].append(building_data)
 	
 	# Crear elementos organizados por categoría
-	var is_first_category = true
 	for category in categories:
-		# Añadir separador antes de cada categoría (excepto la primera)
-		if not is_first_category:
-			var category_separator = create_category_separator()
-			buildings_list.add_child(category_separator)
-		
 		# Añadir encabezado de categoría
 		if categories.size() > 1:  # Solo mostrar categorías si hay más de una
 			var category_header = create_category_header(category)
 			buildings_list.add_child(category_header)
 		
-		# Añadir edificios de esta categoría con separación mejorada
-		for i in range(categories[category].size()):
-			var building_data = categories[category][i]
+		# Añadir edificios de esta categoría
+		for building_data in categories[category]:
 			var building_item = create_building_item_from_scene(building_data)
 			buildings_list.add_child(building_item)
 			building_items.append(building_item)
-			
-			# Añadir un pequeño separador entre edificios (excepto después del último de la categoría)
-			if i < categories[category].size() - 1:
-				var item_separator = create_item_separator()
-				buildings_list.add_child(item_separator)
-		
-		is_first_category = false
 
 func clear_building_items():
 	# Limpiar referencias
@@ -157,36 +139,14 @@ func clear_building_items():
 	for child in buildings_list.get_children():
 		child.queue_free()
 
-func create_category_separator() -> Control:
-	"""Crea un separador más grande entre categorías"""
-	var separator = Control.new()
-	separator.custom_minimum_size = Vector2(0, 20)  # Espacio de 20px entre categorías
-	separator.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	return separator
-
-func create_item_separator() -> Control:
-	"""Crea un pequeño separador entre elementos individuales"""
-	var separator = Control.new()
-	separator.custom_minimum_size = Vector2(0, 4)  # Espacio de 4px entre elementos
-	separator.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	return separator
-
 func create_category_header(category: String) -> Control:
 	var container = VBoxContainer.new()
 	container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
-	# Separador superior más visible
+	# Separador superior
 	var separator_top = HSeparator.new()
-	separator_top.custom_minimum_size.y = 2
-	separator_top.add_theme_color_override("color", Color(0.6, 0.6, 0.6, 0.8))
+	separator_top.custom_minimum_size.y = 10
 	container.add_child(separator_top)
-	
-	# Contenedor para la etiqueta con padding
-	var label_container = MarginContainer.new()
-	label_container.add_theme_constant_override("margin_top", 8)
-	label_container.add_theme_constant_override("margin_bottom", 8)
-	label_container.add_theme_constant_override("margin_left", 10)
-	label_container.add_theme_constant_override("margin_right", 10)
 	
 	# Etiqueta de categoría
 	var label = Label.new()
@@ -195,14 +155,11 @@ func create_category_header(category: String) -> Control:
 	label.add_theme_font_size_override("font_size", 16)
 	label.add_theme_color_override("font_color", Color.GOLD)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	
-	label_container.add_child(label)
-	container.add_child(label_container)
+	container.add_child(label)
 	
 	# Separador inferior
 	var separator_bottom = HSeparator.new()
-	separator_bottom.custom_minimum_size.y = 2
-	separator_bottom.add_theme_color_override("color", Color(0.6, 0.6, 0.6, 0.8))
+	separator_bottom.custom_minimum_size.y = 5
 	container.add_child(separator_bottom)
 	
 	return container
@@ -211,29 +168,9 @@ func create_building_item_from_scene(building_data: Dictionary) -> Panel:
 	# Instanciar la escena del elemento de tienda
 	var building_item = building_item_scene.instantiate()
 	
-	# Configurar size flags para que se ajuste correctamente con mejor espaciado
+	# Configurar size flags para que se ajuste correctamente
 	building_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	building_item.size_flags_vertical = Control.SIZE_SHRINK_CENTER  # Cambiar para que se ajuste al contenido
-	# NO establecer custom_minimum_size aquí - se calculará dinámicamente
-	
-	# Añadir un poco de margen interno al panel
-	var style_box = StyleBoxFlat.new()
-	style_box.bg_color = Color(0.2, 0.2, 0.2, 0.8)  # Color de fondo sutil
-	style_box.border_color = Color(0.4, 0.4, 0.4, 0.6)
-	style_box.border_width_left = 1
-	style_box.border_width_right = 1
-	style_box.border_width_top = 1
-	style_box.border_width_bottom = 1
-	style_box.corner_radius_top_left = 6
-	style_box.corner_radius_top_right = 6
-	style_box.corner_radius_bottom_left = 6
-	style_box.corner_radius_bottom_right = 6
-	style_box.content_margin_top = 4
-	style_box.content_margin_bottom = 4
-	style_box.content_margin_left = 4
-	style_box.content_margin_right = 4
-	
-	building_item.add_theme_stylebox_override("panel", style_box)
+	building_item.custom_minimum_size = Vector2(0, 100)
 	
 	# IMPORTANTE: Llamar a _ready primero antes de setup_building_data
 	# Esto se hace automáticamente cuando se añade al árbol de nodos
@@ -286,19 +223,19 @@ func create_temporary_feedback(message: String, color: Color):
 	if active_feedback_panel and is_instance_valid(active_feedback_panel):
 		active_feedback_panel.queue_free()
 	
-	# Crear un panel de retroalimentación temporal con mejor diseño
+	# Crear un panel de retroalimentación temporal
 	var feedback_panel = Panel.new()
 	feedback_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	feedback_panel.custom_minimum_size.y = 70  # Aumentar altura
+	feedback_panel.custom_minimum_size.y = 60
 	
-	# Estilo del panel mejorado
+	# Estilo del panel
 	var style_box = StyleBoxFlat.new()
-	style_box.bg_color = Color(color.r, color.g, color.b, 0.15)
+	style_box.bg_color = Color(color.r, color.g, color.b, 0.2)
 	style_box.border_color = color
-	style_box.border_width_left = 3
-	style_box.border_width_right = 3
-	style_box.border_width_top = 3
-	style_box.border_width_bottom = 3
+	style_box.border_width_left = 2
+	style_box.border_width_right = 2
+	style_box.border_width_top = 2
+	style_box.border_width_bottom = 2
 	style_box.corner_radius_top_left = 8
 	style_box.corner_radius_top_right = 8
 	style_box.corner_radius_bottom_left = 8
@@ -308,8 +245,8 @@ func create_temporary_feedback(message: String, color: Color):
 	# Contenedor con márgenes
 	var margin_container = MarginContainer.new()
 	margin_container.anchors_preset = Control.PRESET_FULL_RECT
-	margin_container.add_theme_constant_override("margin_left", 15)
-	margin_container.add_theme_constant_override("margin_right", 15)
+	margin_container.add_theme_constant_override("margin_left", 10)
+	margin_container.add_theme_constant_override("margin_right", 10)
 	margin_container.add_theme_constant_override("margin_top", 10)
 	margin_container.add_theme_constant_override("margin_bottom", 10)
 	
@@ -324,7 +261,7 @@ func create_temporary_feedback(message: String, color: Color):
 	margin_container.add_child(feedback_label)
 	feedback_panel.add_child(margin_container)
 	
-	# Añadir al contenedor principal (VBoxContainer) en lugar de buildings_list
+	# CORRECCIÓN: Añadir al contenedor principal (VBoxContainer) en lugar de buildings_list
 	# para que esté dentro del panel visible
 	add_child(feedback_panel)
 	move_child(feedback_panel, 2)  # Posición después del título y separador
@@ -363,22 +300,27 @@ func _on_building_placement_cancelled():
 		title_label.text = "TIENDA DE EDIFICIOS"
 		title_label.add_theme_color_override("font_color", Color.WHITE)
 
-# Funciones adicionales (mantenidas igual)
+# Función para añadir más edificios dinámicamente
 func add_building_to_store(building_data: Dictionary):
 	available_buildings.append(building_data)
+	# Recrear los elementos de la tienda
 	call_deferred("create_store_items")
 
+# Función para remover un edificio de la tienda
 func remove_building_from_store(building_name: String):
 	for i in range(available_buildings.size() - 1, -1, -1):
 		if available_buildings[i].get("name", "") == building_name:
 			available_buildings.remove_at(i)
 			break
+	# Recrear los elementos de la tienda
 	call_deferred("create_store_items")
 
+# Función para filtrar por categoría (para futuras expansiones)
 func filter_by_category(category: String):
 	current_category = category
 	create_store_items()
 
+# Función para destacar un edificio específico
 func highlight_building(building_name: String):
 	for item in building_items:
 		var item_data = item.get_building_data()
@@ -386,6 +328,7 @@ func highlight_building(building_name: String):
 			item.highlight_item()
 			break
 
+# Función para obtener estadísticas de la tienda
 func get_store_stats() -> Dictionary:
 	return {
 		"total_buildings": available_buildings.size(),
@@ -420,16 +363,19 @@ func count_affordable_buildings() -> int:
 			count += 1
 	return count
 
+# Función para refrescar todos los elementos (útil para debugging)
 func refresh_all_items():
 	for item in building_items:
 		item.update_button_state()
 
+# Función para obtener un edificio por nombre
 func get_building_by_name(building_name: String) -> Dictionary:
 	for building in available_buildings:
 		if building.get("name", "") == building_name:
 			return building
 	return {}
 
+# Función para limpiar feedback activo (útil para transiciones)
 func clear_active_feedback():
 	if active_feedback_panel and is_instance_valid(active_feedback_panel):
 		active_feedback_panel.queue_free()

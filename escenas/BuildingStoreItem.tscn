@@ -5,7 +5,7 @@
 [node name="BuildingStoreItem" type="Panel"]
 custom_minimum_size = Vector2(0, 100)
 size_flags_horizontal = 3
-size_flags_vertical = 8
+size_flags_vertical = 0
 script = ExtResource("1_store_item")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -13,9 +13,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
+offset_left = 8.0
 offset_top = 8.0
-offset_right = -12.0
+offset_right = -8.0
 offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -28,27 +28,22 @@ size_flags_vertical = 3
 [node name="InfoContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
 size_flags_stretch_ratio = 2.5
 
 [node name="BuildingName" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer"]
 layout_mode = 2
-size_flags_vertical = 0
 theme_override_font_sizes/font_size = 16
 text = "Nombre del Edificio"
 autowrap_mode = 3
 
 [node name="StatsContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/InfoContainer"]
 layout_mode = 2
-size_flags_vertical = 0
 
 [node name="CostLabel" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer/StatsContainer"]
 layout_mode = 2
-size_flags_vertical = 1
 theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_font_sizes/font_size = 14
 text = "💰 999"
-vertical_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="MarginContainer/HBoxContainer/InfoContainer/StatsContainer"]
 custom_minimum_size = Vector2(10, 0)
@@ -56,16 +51,12 @@ layout_mode = 2
 
 [node name="PPSLabel" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer/StatsContainer"]
 layout_mode = 2
-size_flags_vertical = 1
 theme_override_colors/font_color = Color(0, 1, 0.5, 1)
 theme_override_font_sizes/font_size = 14
 text = "⚡ +5.0 PPS"
-vertical_alignment = 1
 
 [node name="DescriptionLabel" type="Label" parent="MarginContainer/HBoxContainer/InfoContainer"]
-clip_contents = true
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_font_sizes/font_size = 12
@@ -74,24 +65,21 @@ vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="VSeparator2" type="VSeparator" parent="MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(12, 0)
+custom_minimum_size = Vector2(8, 0)
 layout_mode = 2
 
 [node name="ButtonContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
+size_flags_horizontal = 3
 
 [node name="PurchaseButton" type="Button" parent="MarginContainer/HBoxContainer/ButtonContainer"]
-custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 12
 text = "COMPRAR"
 
 [node name="HSeparator" type="HSeparator" parent="."]
-visible = false
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 1
 anchors_preset = 12
