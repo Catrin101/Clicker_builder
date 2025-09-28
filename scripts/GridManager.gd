@@ -1,4 +1,4 @@
-# GridManager.gd - Gestor de la cuadrícula - CORREGIDO
+# GridManager.gd - Gestor de la cuadrícula - SPRINT 4 MEJORADO
 extends Node2D
 
 # Diccionario para almacenar las casillas (clave: "x,y", valor: nodo)
@@ -78,7 +78,7 @@ func buy_and_place_terrain(x: int, y: int) -> bool:
 	
 	return false
 
-# Función para obtener vecinos - CORREGIDA
+# Función para obtener vecinos
 func get_neighbors(x: int, y: int) -> Dictionary:
 	var neighbors = {}
 	var adjacent_positions = [
@@ -106,7 +106,7 @@ func has_terrain(x: int, y: int) -> bool:
 	var key = str(x) + "," + str(y)
 	return grid_cells.has(key)
 
-# Función para colocar edificios - CORREGIDA
+# Función para colocar edificios - MEJORADA PARA SPRINT 4
 func place_building(x: int, y: int, building_scene_path: String) -> bool:
 	print("\n=== Colocando edificio en (", x, ", ", y, ") ===")
 	
@@ -131,7 +131,7 @@ func place_building(x: int, y: int, building_scene_path: String) -> bool:
 	# Configurar posición
 	building_instance.position = Vector2(x * cell_size, y * cell_size)
 	
-	# IMPORTANTE: Llamar a on_placed_in_grid ANTES de añadir como hijo
+	# Llamar a on_placed_in_grid ANTES de añadir como hijo
 	if building_instance.has_method("on_placed_in_grid"):
 		building_instance.on_placed_in_grid(x, y)
 	else:
@@ -146,6 +146,10 @@ func place_building(x: int, y: int, building_scene_path: String) -> bool:
 	current_cell.building_node = building_instance
 	
 	print("Edificio ", building_instance.building_name, " colocado exitosamente")
+	
+	# SPRINT 4: Notificar al GameManager sobre la construcción
+	var building_name = building_instance.building_name
+	GameManager.on_building_built(building_name)
 	
 	# Notificar a vecinos DESPUÉS de que el edificio esté completamente configurado
 	call_deferred("notify_neighbors_synergy_change", x, y)
@@ -192,21 +196,72 @@ func get_all_buildings() -> Array:
 			buildings.append(terrain.building_node)
 	return buildings
 
+# SPRINT 4: Función mejorada para estadísticas detalladas
 func get_grid_stats() -> Dictionary:
 	var stats = {
 		"total_cells": grid_cells.size(),
 		"total_buildings": 0,
-		"building_types": {}
+		"building_types": {},
+		"empty_cells": 0,
+		"average_pps_per_building": 0.0,
+		"total_grid_pps": 0.0
 	}
+	
+	var total_pps = 0.0
 	
 	for cell_key in grid_cells:
 		var terrain = grid_cells[cell_key]
 		if terrain.has_building and terrain.building_node:
 			stats.total_buildings += 1
-			var building_name = terrain.building_node.building_name
+			var building = terrain.building_node
+			var building_name = building.building_name
+			var building_pps = building.get_total_points_per_second() if building.has_method("get_total_points_per_second") else 0.0
+			
+			total_pps += building_pps
+			
 			if stats.building_types.has(building_name):
-				stats.building_types[building_name] += 1
+				stats.building_types[building_name].count += 1
+				stats.building_types[building_name].total_pps += building_pps
 			else:
-				stats.building_types[building_name] = 1
+				stats.building_types[building_name] = {
+					"count": 1,
+					"total_pps": building_pps
+				}
+		else:
+			stats.empty_cells += 1
+	
+	stats.total_grid_pps = total_pps
+	if stats.total_buildings > 0:
+		stats.average_pps_per_building = total_pps / stats.total_buildings
 	
 	return stats
+
+# SPRINT 4: Función para obtener información de eficiencia
+func get_efficiency_stats() -> Dictionary:
+	var stats = get_grid_stats()
+	var efficiency = {
+		"land_usage_percent": 0.0,
+		"most_efficient_building": "",
+		"least_efficient_building": "",
+		"total_investment_efficiency": 0.0
+	}
+	
+	if stats.total_cells > 0:
+		efficiency.land_usage_percent = (float(stats.total_buildings) / float(stats.total_cells)) * 100.0
+	
+	var best_efficiency = 0.0
+	var worst_efficiency = 999999.0
+	
+	for building_type in stats.building_types:
+		var building_data = stats.building_types[building_type]
+		var avg_pps = building_data.total_pps / building_data.count
+		
+		if avg_pps > best_efficiency:
+			best_efficiency = avg_pps
+			efficiency.most_efficient_building = building_type
+		
+		if avg_pps < worst_efficiency:
+			worst_efficiency = avg_pps
+			efficiency.least_efficient_building = building_type
+	
+	return efficiency
