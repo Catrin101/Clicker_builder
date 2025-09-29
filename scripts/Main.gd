@@ -2,8 +2,8 @@
 extends Node2D
 
 # Referencias a nodos UI
-@onready var points_display: Label = $UI/Pontis/PointsDisplay
-@onready var points_per_second_display: Label = $UI/Pontis/PointsPerSecondDisplay
+@onready var points_display: Label = $UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer/PointsDisplay
+@onready var points_per_second_display: Label = $UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer/PointsPerSecondDisplay
 @onready var click_button: Button = $UI/ClickButton
 @onready var expand_land_button: Button = $UI/ExpandLandButton
 @onready var grid_manager: Node2D = $GridManager
@@ -316,9 +316,12 @@ func create_building_placement_indicator(pos: Vector2i) -> Node2D:
 func _on_expansion_position_selected(x: int, y: int):
 	print("🌱 Posición seleccionada para expansión: (", x, ", ", y, ")")
 	
+	# Guardar el costo actual antes de comprar (porque el costo aumenta después)
+	var current_land_cost = grid_manager.land_cost
+	
 	# Intentar comprar terreno
 	if grid_manager.buy_and_place_terrain(x, y):
-		total_spent += grid_manager.land_cost
+		total_spent += current_land_cost
 		create_success_effect(Vector2(x * grid_manager.cell_size, y * grid_manager.cell_size), "¡Terreno comprado!")
 		
 		# Salir del modo expansión después de una compra exitosa

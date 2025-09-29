@@ -1,8 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://vsmgd0bgc1uv"]
+[gd_scene load_steps=14 format=3 uid="uid://vsmgd0bgc1uv"]
 
 [ext_resource type="Script" uid="uid://cmmhxy0kw10fr" path="res://scripts/Main.gd" id="1_jumxm"]
 [ext_resource type="Script" uid="uid://cciqx3hwclx6s" path="res://scripts/GridManager.gd" id="2_26pgj"]
+[ext_resource type="Script" uid="uid://bk8icf1ugsjc5" path="res://scripts/StatsPanel.gd" id="4_26pgj"]
 [ext_resource type="Script" uid="uid://00gckuotu12e" path="res://scripts/StoreUI.gd" id="4_store"]
+[ext_resource type="Script" uid="uid://c47kivwuqvltm" path="res://scripts/WelcomePanel.gd" id="5_acisx"]
+[ext_resource type="Texture2D" uid="uid://bljj0t7q8017l" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barBlue_horizontalLeft.png" id="5_dg7ii"]
+[ext_resource type="Script" uid="uid://mrv5stskllo0" path="res://scripts/CompletionPanel.gd" id="6_a5wrc"]
+[ext_resource type="Texture2D" uid="uid://bodj7n2ct51p2" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barBlue_horizontalRight.png" id="6_woaio"]
+[ext_resource type="Texture2D" uid="uid://bp2ewphj3ap3p" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barBlue_horizontalBlue.png" id="7_7an46"]
+[ext_resource type="Script" uid="uid://did3t3ski72bs" path="res://scripts/ProgressIndicator.gd" id="7_ueiap"]
+[ext_resource type="Texture2D" uid="uid://cpy17hvwuksr2" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barRed_horizontalLeft.png" id="8_acisx"]
+[ext_resource type="Texture2D" uid="uid://c3u0rw27goxll" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barRed_horizontalMid.png" id="9_a5wrc"]
+[ext_resource type="Texture2D" uid="uid://btdi1ef7mhnfo" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barRed_horizontalRight.png" id="10_ueiap"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_jumxm")
@@ -11,28 +21,6 @@ script = ExtResource("1_jumxm")
 script = ExtResource("2_26pgj")
 
 [node name="UI" type="CanvasLayer" parent="."]
-
-[node name="Pontis" type="Panel" parent="UI"]
-offset_left = 331.0
-offset_right = 524.0
-offset_bottom = 79.0
-metadata/_edit_group_ = true
-
-[node name="PointsDisplay" type="Label" parent="UI/Pontis"]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 6.0
-offset_right = 185.0
-offset_bottom = 48.0
-text = "Puntos: 0"
-
-[node name="PointsPerSecondDisplay" type="Label" parent="UI/Pontis"]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 37.0
-offset_right = 185.0
-offset_bottom = 79.0
-text = "PPS: 0.0"
 
 [node name="ClickButton" type="Button" parent="UI"]
 anchors_preset = 7
@@ -49,6 +37,7 @@ grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Clic (+1)"
+metadata/_edit_group_ = true
 
 [node name="ExpandLandButton" type="Button" parent="UI"]
 anchors_preset = 7
@@ -63,6 +52,7 @@ offset_bottom = -38.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "Expandir Terreno"
+metadata/_edit_group_ = true
 
 [node name="StorePanel" type="Panel" parent="UI"]
 anchors_preset = 9
@@ -106,5 +96,369 @@ offset_right = -13.0
 offset_bottom = 89.0
 grow_horizontal = 0
 text = "Cancelar"
+
+[node name="StatsPanel" type="Panel" parent="UI"]
+offset_left = 333.0
+offset_top = 4.0
+offset_right = 615.0
+offset_bottom = 203.0
+script = ExtResource("4_26pgj")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/StatsPanel"]
+layout_mode = 0
+offset_left = -3.0
+offset_top = 1.0
+offset_right = 196.0
+offset_bottom = 131.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="StatsContainer" type="VBoxContainer" parent="UI/StatsPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="StatsHeader" type="HBoxContainer" parent="UI/StatsPanel/MarginContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="StatsTitle" type="Label" parent="UI/StatsPanel/MarginContainer/StatsContainer/StatsHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "📊 ESTADÍSTICAS"
+
+[node name="ToggleStatsButton" type="Button" parent="UI/StatsPanel/MarginContainer/StatsContainer/StatsHeader"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "🔽"
+
+[node name="QuickStatsContainer" type="VBoxContainer" parent="UI/StatsPanel/MarginContainer/StatsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="PointsDisplay" type="Label" parent="UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer"]
+layout_mode = 2
+text = "Puntos: 0"
+
+[node name="PointsPerSecondDisplay" type="Label" parent="UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer"]
+layout_mode = 2
+text = "PPS: 0.0"
+
+[node name="TotalBuildingsLabel" type="Label" parent="UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "🏠 Edificios: 0"
+
+[node name="TotalPPSLabel" type="Label" parent="UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "⚡ PPS Total: 0.0"
+
+[node name="TotalPointsLabel" type="Label" parent="UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "💰 Puntos Ganados: 0"
+
+[node name="DetailedStatsContainer" type="VBoxContainer" parent="UI/StatsPanel/MarginContainer/StatsContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/StatsPanel/MarginContainer/StatsContainer/DetailedStatsContainer"]
+layout_mode = 2
+
+[node name="BuildingTypesTitle" type="Label" parent="UI/StatsPanel/MarginContainer/StatsContainer/DetailedStatsContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "TIPOS DE EDIFICIOS:"
+
+[node name="BuildingTypesList" type="VBoxContainer" parent="UI/StatsPanel/MarginContainer/StatsContainer/DetailedStatsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/StatsPanel/MarginContainer/StatsContainer/DetailedStatsContainer/BuildingTypesList"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="GeneralStatsTitle" type="Label" parent="UI/StatsPanel/MarginContainer/StatsContainer/DetailedStatsContainer/BuildingTypesList/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "ESTADÍSTICAS GENERALES:"
+
+[node name="GeneralStatsList" type="VBoxContainer" parent="UI/StatsPanel/MarginContainer/StatsContainer/DetailedStatsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="WelcomeOverlay" type="ColorRect" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.205)
+script = ExtResource("5_acisx")
+
+[node name="WelcomePanel" type="Panel" parent="UI/WelcomeOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -219.0
+offset_top = -287.0
+offset_right = 219.0
+offset_bottom = 287.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WelcomeMargin" type="MarginContainer" parent="UI/WelcomeOverlay/WelcomePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="WelcomeContainer" type="VBoxContainer" parent="UI/WelcomeOverlay/WelcomePanel/WelcomeMargin"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="WelcomeTitle" type="Label" parent="UI/WelcomeOverlay/WelcomePanel/WelcomeMargin/WelcomeContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = "🏰 BIENVENIDO A TU CIUDAD 🏰"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/WelcomeOverlay/WelcomePanel/WelcomeMargin/WelcomeContainer"]
+layout_mode = 2
+
+[node name="WelcomeMessage" type="RichTextLabel" parent="UI/WelcomeOverlay/WelcomePanel/WelcomeMargin/WelcomeContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 14
+bbcode_enabled = true
+text = "[center]¡Bienvenido, Constructor![/center]
+    
+    Estás a punto de comenzar tu aventura para construir la ciudad más próspera del reino.
+    
+    [b]Tu Objetivo:[/b]
+    • Construir al menos UN edificio de cada tipo disponible
+    • Desbloquear todos los logros del juego
+    
+    [b]Consejos:[/b]
+    • Haz clic para ganar puntos
+    • Compra edificios para generar puntos automáticamente
+    • Planifica bien tu ciudad: ¡las sinergias son clave!
+    • Expande tu terreno estratégicamente
+    
+    [center][wave]¡Buena suerte, Constructor![/wave][/center]"
+fit_content = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/WelcomeOverlay/WelcomePanel/WelcomeMargin/WelcomeContainer"]
+layout_mode = 2
+
+[node name="StartGameButton" type="Button" parent="UI/WelcomeOverlay/WelcomePanel/WelcomeMargin/WelcomeContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "🚀 ¡COMENZAR MI CIUDAD!"
+
+[node name="CompletionOverlay" type="ColorRect" parent="UI"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.203922)
+script = ExtResource("6_a5wrc")
+
+[node name="CompletionPanel" type="Panel" parent="UI/CompletionOverlay"]
+custom_minimum_size = Vector2(700, 600)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -300.0
+offset_right = 350.0
+offset_bottom = 318.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CompletionMargin" type="MarginContainer" parent="UI/CompletionOverlay/CompletionPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="CompletionContainer" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="CompletionTitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "🎉 ¡FELICIDADES! 🎉"
+
+[node name="CompletionSubtitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.5, 1, 0.5, 1)
+theme_override_font_sizes/font_size = 20
+text = "¡Has Completado Tu Ciudad!"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+layout_mode = 2
+
+[node name="CompletionMessage" type="RichTextLabel" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 14
+bbcode_enabled = true
+text = "[center]¡Increíble trabajo, Constructor Maestro![/center]
+    
+    Has demostrado tu habilidad construyendo una ciudad próspera y completa.
+    
+    [b]Tus Logros:[/b]
+    • ✅ Construiste al menos un edificio de cada tipo
+    • ✅ [color=gray](Logros pendientes de implementar)[/color]
+    
+    [center]Pero tu viaje no termina aquí...[/center]
+    
+    Puedes continuar expandiendo tu ciudad, optimizando sinergias y alcanzando nuevos récords de producción.
+    
+    [center][rainbow]¡Gracias por jugar![/rainbow][/center]"
+fit_content = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+layout_mode = 2
+
+[node name="CompletionStatsContainer" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="CompletionStatsTitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionStatsContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "📊 ESTADÍSTICAS FINALES:"
+
+[node name="CompletionStatsList" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="HSeparator" type="HSeparator" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+layout_mode = 2
+
+[node name="CompletionButtonsContainer" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 20
+
+[node name="ContinuePlayingButton" type="Button" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionButtonsContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "▶️ Seguir Jugando"
+
+[node name="CloseCompletionButton" type="Button" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionButtonsContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "✅ Cerrar"
+
+[node name="ProgressIndicatorPanel" type="Panel" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -191.0
+offset_bottom = 174.0
+grow_horizontal = 0
+script = ExtResource("7_ueiap")
+
+[node name="ProgressMargin" type="MarginContainer" parent="UI/ProgressIndicatorPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ProgressContainer" type="VBoxContainer" parent="UI/ProgressIndicatorPanel/ProgressMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ProgressTitle" type="Label" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_font_sizes/font_size = 14
+text = "🎯 PROGRESO DEL JUEGO"
+
+[node name="HSeparator" type="HSeparator" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+
+[node name="BuildingsProgressContainer" type="HBoxContainer" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+
+[node name="BuildingsProgressLabel" type="Label" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "🏠 Tipos de Edificios:"
+
+[node name="BuildingsProgressBar" type="TextureProgressBar" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+max_value = 10.0
+texture_under = ExtResource("5_dg7ii")
+texture_over = ExtResource("6_woaio")
+texture_progress = ExtResource("7_7an46")
+
+[node name="HSeparator2" type="HSeparator" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+
+[node name="AchievementsProgressLabel" type="Label" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 12
+text = "🏆 Logros:"
+
+[node name="AchievementsProgressBar" type="TextureProgressBar" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+show_behind_parent = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+min_value = 1.0
+max_value = 1.0
+value = 1.0
+texture_under = ExtResource("8_acisx")
+texture_over = ExtResource("9_a5wrc")
+texture_progress = ExtResource("10_ueiap")
 
 [node name="Camera2D" type="Camera2D" parent="."]

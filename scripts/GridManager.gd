@@ -147,6 +147,9 @@ func place_building(x: int, y: int, building_scene_path: String) -> bool:
 	
 	print("Edificio ", building_instance.building_name, " colocado exitosamente")
 	
+	# NUEVO: Registrar el edificio en StatsManager
+	StatsManager.register_building_placed(building_instance.building_name)
+	
 	# Notificar a vecinos DESPUÉS de que el edificio esté completamente configurado
 	call_deferred("notify_neighbors_synergy_change", x, y)
 	
