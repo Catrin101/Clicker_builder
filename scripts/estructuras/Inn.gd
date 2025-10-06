@@ -4,6 +4,7 @@ extends Building
 func _ready():
 	# Configurar las propiedades básicas del edificio
 	building_name = "Inn"
+	scene_path = "res://escenas/Estructuras/Inn.tscn"
 	cost = 400
 	points_per_second = 3.5
 	description = "Más que un simple bar, la posada ofrece un lugar para descansar a los viajeros cansados."

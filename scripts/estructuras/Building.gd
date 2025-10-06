@@ -4,6 +4,7 @@ extends Node2D
 
 # Variables exportadas (configurables desde el editor)
 @export var building_name: String = ""
+@export var scene_path: String = ""
 @export var cost: int = 100
 @export var points_per_second: float = 1.0
 @export var description: String = ""
@@ -223,8 +224,11 @@ func on_neighbor_changed():
 	call_deferred("calculate_synergies")
 
 # Función que se llama después de ser colocado en la cuadrícula
-func on_placed_in_grid(x: int, y: int):
+func on_placed_in_grid(x: int, y: int, is_loading: bool = false):
 	grid_x = x
 	grid_y = y
 	print("Edificio ", building_name, " colocado en cuadrícula en (", x, ", ", y, ")")
-	call_deferred("calculate_synergies")
+	
+	# Solo calcular sinergias automáticamente si NO estamos en proceso de carga
+	if not is_loading:
+		call_deferred("calculate_synergies")

@@ -4,6 +4,7 @@ extends Building
 func _ready():
 	# Configurar las propiedades básicas del edificio
 	building_name = "Tavern"
+	scene_path = "res://escenas/Estructuras/Tavern.tscn"
 	cost = 250
 	points_per_second = 2.0
 	description = "Un animado punto de encuentro para los aldeanos. Aumenta su felicidad y productividad."

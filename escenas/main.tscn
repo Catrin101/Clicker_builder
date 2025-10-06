@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://vsmgd0bgc1uv"]
+[gd_scene load_steps=16 format=3 uid="uid://vsmgd0bgc1uv"]
 
 [ext_resource type="Script" uid="uid://cmmhxy0kw10fr" path="res://scripts/Main.gd" id="1_jumxm"]
 [ext_resource type="Script" uid="uid://cciqx3hwclx6s" path="res://scripts/GridManager.gd" id="2_26pgj"]
@@ -13,6 +13,8 @@
 [ext_resource type="Texture2D" uid="uid://cpy17hvwuksr2" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barRed_horizontalLeft.png" id="8_acisx"]
 [ext_resource type="Texture2D" uid="uid://c3u0rw27goxll" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barRed_horizontalMid.png" id="9_a5wrc"]
 [ext_resource type="Texture2D" uid="uid://btdi1ef7mhnfo" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barRed_horizontalRight.png" id="10_ueiap"]
+[ext_resource type="PackedScene" uid="uid://bs1brnamwrxm5" path="res://escenas/PauseMenu.tscn" id="14_a5wrc"]
+[ext_resource type="Script" uid="uid://ddywngglkk7m6" path="res://scripts/CameraController.gd" id="15_ueiap"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_jumxm")
@@ -29,13 +31,14 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -352.0
-offset_top = -119.0
+offset_top = -108.0
 offset_right = -30.0
-offset_bottom = -38.0
+offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_font_sizes/font_size = 28
 text = "Clic (+1)"
 metadata/_edit_group_ = true
 
@@ -46,12 +49,26 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = 53.0
-offset_top = -119.0
+offset_top = -108.0
 offset_right = 424.0
-offset_bottom = -38.0
+offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_font_sizes/font_size = 28
 text = "Expandir Terreno"
+metadata/_edit_group_ = true
+
+[node name="CancelPlacementButton" type="Button" parent="UI"]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 140.0
+offset_right = 328.0
+offset_bottom = 59.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 28
+text = "Cancelar"
 metadata/_edit_group_ = true
 
 [node name="StorePanel" type="Panel" parent="UI"]
@@ -85,23 +102,10 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CancelPlacementButton" type="Button" parent="UI"]
-visible = false
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -201.0
-offset_top = 14.0
-offset_right = -13.0
-offset_bottom = 89.0
-grow_horizontal = 0
-text = "Cancelar"
-
 [node name="StatsPanel" type="Panel" parent="UI"]
-offset_left = 333.0
-offset_top = 4.0
-offset_right = 615.0
-offset_bottom = 203.0
+offset_left = 326.0
+offset_right = 608.0
+offset_bottom = 199.0
 script = ExtResource("4_26pgj")
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/StatsPanel"]
@@ -192,6 +196,180 @@ text = "ESTADÍSTICAS GENERALES:"
 [node name="GeneralStatsList" type="VBoxContainer" parent="UI/StatsPanel/MarginContainer/StatsContainer/DetailedStatsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 2
+
+[node name="ProgressIndicatorPanel" type="Panel" parent="UI"]
+visible = false
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -197.0
+offset_top = 5.0
+offset_right = -6.0
+offset_bottom = 179.0
+grow_horizontal = 0
+script = ExtResource("7_ueiap")
+
+[node name="ProgressMargin" type="MarginContainer" parent="UI/ProgressIndicatorPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ProgressContainer" type="VBoxContainer" parent="UI/ProgressIndicatorPanel/ProgressMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ProgressTitle" type="Label" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_font_sizes/font_size = 14
+text = "🎯 PROGRESO DEL JUEGO"
+
+[node name="HSeparator" type="HSeparator" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+
+[node name="BuildingsProgressContainer" type="HBoxContainer" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+
+[node name="BuildingsProgressLabel" type="Label" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "🏠 Tipos de Edificios:"
+
+[node name="BuildingsProgressBar" type="TextureProgressBar" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+max_value = 10.0
+texture_under = ExtResource("5_dg7ii")
+texture_over = ExtResource("6_woaio")
+texture_progress = ExtResource("7_7an46")
+
+[node name="HSeparator2" type="HSeparator" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+
+[node name="AchievementsProgressLabel" type="Label" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 12
+text = "🏆 Logros:"
+
+[node name="AchievementsProgressBar" type="TextureProgressBar" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
+show_behind_parent = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+min_value = 1.0
+max_value = 1.0
+value = 1.0
+texture_under = ExtResource("8_acisx")
+texture_over = ExtResource("9_a5wrc")
+texture_progress = ExtResource("10_ueiap")
+
+[node name="SaveLoadTestPanel" type="Panel" parent="UI"]
+visible = false
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -237.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/SaveLoadTestPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="SaveLoadContainer" type="VBoxContainer" parent="UI/SaveLoadTestPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TestTitle" type="Label" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "🧪 PRUEBAS DE GUARDADO"
+
+[node name="HSeparator" type="HSeparator" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
+layout_mode = 2
+
+[node name="Slot1Container" type="HBoxContainer" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Slot1Label" type="Label" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "📁 Slot 1"
+
+[node name="SaveSlot1Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "💾"
+
+[node name="LoadSlot1Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "📂"
+
+[node name="HSeparator2" type="HSeparator" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
+layout_mode = 2
+
+[node name="Slot2Container" type="HBoxContainer" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Slot2Label" type="Label" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "📁 Slot 2"
+
+[node name="SaveSlot2Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "💾"
+
+[node name="LoadSlot2Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "📂"
+
+[node name="HSeparator3" type="HSeparator" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
+layout_mode = 2
+
+[node name="Slot3Container" type="HBoxContainer" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Slot3Label" type="Label" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot3Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "📁 Slot 3"
+
+[node name="SaveSlot3Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot3Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "💾"
+
+[node name="LoadSlot3Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot3Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "📂"
 
 [node name="WelcomeOverlay" type="ColorRect" parent="UI"]
 anchors_preset = 15
@@ -390,75 +568,22 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "✅ Cerrar"
 
-[node name="ProgressIndicatorPanel" type="Panel" parent="UI"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -191.0
-offset_bottom = 174.0
-grow_horizontal = 0
-script = ExtResource("7_ueiap")
+[node name="PauseMenu" parent="UI" instance=ExtResource("14_a5wrc")]
 
-[node name="ProgressMargin" type="MarginContainer" parent="UI/ProgressIndicatorPanel"]
-layout_mode = 1
-anchors_preset = 15
+[node name="PauseButton" type="Button" parent="UI"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="ProgressContainer" type="VBoxContainer" parent="UI/ProgressIndicatorPanel/ProgressMargin"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="ProgressTitle" type="Label" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(1, 0.8, 0, 1)
-theme_override_font_sizes/font_size = 14
-text = "🎯 PROGRESO DEL JUEGO"
-
-[node name="HSeparator" type="HSeparator" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
-layout_mode = 2
-
-[node name="BuildingsProgressContainer" type="HBoxContainer" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
-layout_mode = 2
-
-[node name="BuildingsProgressLabel" type="Label" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "🏠 Tipos de Edificios:"
-
-[node name="BuildingsProgressBar" type="TextureProgressBar" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-max_value = 10.0
-texture_under = ExtResource("5_dg7ii")
-texture_over = ExtResource("6_woaio")
-texture_progress = ExtResource("7_7an46")
-
-[node name="HSeparator2" type="HSeparator" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
-layout_mode = 2
-
-[node name="AchievementsProgressLabel" type="Label" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
-theme_override_font_sizes/font_size = 12
-text = "🏆 Logros:"
-
-[node name="AchievementsProgressBar" type="TextureProgressBar" parent="UI/ProgressIndicatorPanel/ProgressMargin/ProgressContainer"]
-show_behind_parent = true
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-min_value = 1.0
-max_value = 1.0
-value = 1.0
-texture_under = ExtResource("8_acisx")
-texture_over = ExtResource("9_a5wrc")
-texture_progress = ExtResource("10_ueiap")
+offset_left = -103.0
+offset_top = -48.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 16
+text = "⏸️ PAUSA"
 
 [node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("15_ueiap")

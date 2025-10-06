@@ -3,6 +3,7 @@ extends Building
 func _ready():
 	# Configurar las propiedades básicas del edificio
 	building_name = "Clock"
+	scene_path = "res://escenas/Estructuras/Clock.tscn"
 	cost = 1500
 	points_per_second = 4.0
 	description = "El pináculo de la ingeniería local. La Torre del Reloj mejora la coordinación de los trabajadores y es un símbolo del progreso de tu pueblo."

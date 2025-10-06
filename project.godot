@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="Clicker"
-run/main_scene="uid://vsmgd0bgc1uv"
+config/version="1.0.0"
+run/main_scene="uid://37nooq32dnhx"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -20,6 +21,7 @@ config/icon="res://icon.svg"
 GameManager="*res://scripts/GameManager.gd"
 StatsManager="*res://scripts/StatsManager.gd"
 GameCompletionManager="*res://scripts/GameCompletionManager.gd"
+SaveSystem="*res://scripts/SaveSystem.gd"
 
 [display]
 
@@ -33,6 +35,14 @@ project/assembly_name="Clicker"
 [gui]
 
 theme/custom="uid://d2asa51h3f7ie"
+
+[input]
+
+ui_cancel={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194305,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
 
 [rendering]
 
