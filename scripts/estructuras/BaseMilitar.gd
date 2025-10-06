@@ -3,6 +3,7 @@ extends Building
 func _ready():
 	# Configurar las propiedades básicas del edificio
 	building_name = "BaseMilitar"
+	scene_path = "res://escenas/Estructuras/BaseMilitar.tscn"
 	cost = 2500
 	points_per_second = 6.0
 	description = "Todo ciudad en crecimiento nesesita poteccion de una buena Milicia"

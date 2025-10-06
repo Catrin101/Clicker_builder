@@ -4,6 +4,7 @@ extends Building
 func _ready():
 	# Configurar las propiedades básicas del edificio
 	building_name = "Castle"
+	scene_path = "res://escenas/Estructuras/Castle.tscn"
 	cost = 2000
 	points_per_second = 5.0
 	description = "El corazón de tu reino. Esta fortaleza no solo protege a tu pueblo, sino que también sirve como el centro de mando."

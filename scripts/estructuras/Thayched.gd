@@ -3,6 +3,7 @@ extends Building
 func _ready():
 	# Configurar las propiedades básicas del edificio
 	building_name = "Thayched"
+	scene_path = "res://escenas/Estructuras/Thayched.tscn"
 	cost = 30
 	points_per_second = 0.25
 	description = "Una vivienda rústica y primitiva. Aunque es más económica, su construcción es menos eficiente para el crecimiento de la población."

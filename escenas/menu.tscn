@@ -1,0 +1,76 @@
+[gd_scene load_steps=2 format=3 uid="uid://37nooq32dnhx"]
+
+[ext_resource type="Script" uid="uid://tr75osavtvmf" path="res://scripts/Menu.gd" id="1_vdanu"]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vdanu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.101961, 0.101961, 0.180392, 1)
+
+[node name="MenuContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuVBox" type="VBoxContainer" parent="MenuContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="GameTitle" type="Label" parent="MenuContainer/MenuVBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+theme_override_font_sizes/font_size = 48
+text = "🏰 CONSTRUCTOR DE CIUDAD 🏰"
+
+[node name="Spacer1" type="Control" parent="MenuContainer/MenuVBox"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="MenuContainer/MenuVBox"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="NewGameButton" type="Button" parent="MenuContainer/MenuVBox/ButtonsContainer"]
+custom_minimum_size = Vector2(300, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "🆕 Nueva Partida"
+
+[node name="LoadGameButton" type="Button" parent="MenuContainer/MenuVBox/ButtonsContainer"]
+custom_minimum_size = Vector2(300, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "📂 Cargar Partida"
+
+[node name="QuitButton" type="Button" parent="MenuContainer/MenuVBox/ButtonsContainer"]
+custom_minimum_size = Vector2(300, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "🚪 Salir"
+
+[node name="VersionLabel" type="Label" parent="MenuContainer/MenuVBox/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.501961, 0.501961, 0.501961, 1)
+theme_override_font_sizes/font_size = 14
+text = "v1.0.0"

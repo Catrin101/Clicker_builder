@@ -2,13 +2,16 @@
 extends Node2D
 
 # Referencias a nodos UI
-@onready var points_display: Label = $UI/Pontis/PointsDisplay
-@onready var points_per_second_display: Label = $UI/Pontis/PointsPerSecondDisplay
+@onready var points_display: Label = $UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer/PointsDisplay
+@onready var points_per_second_display: Label = $UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer/PointsPerSecondDisplay
 @onready var click_button: Button = $UI/ClickButton
 @onready var expand_land_button: Button = $UI/ExpandLandButton
 @onready var grid_manager: Node2D = $GridManager
 @onready var store_ui: VBoxContainer = $UI/StorePanel/StoreUI
 @onready var cancel_placement_button: Button = $UI/CancelPlacementButton
+# Referencia al menú de pausa
+@onready var pause_menu: Control = $UI/PauseMenu
+@onready var pause_button: Button = $UI/PauseButton
 
 # Variables para la expansión de terreno
 var expansion_mode: bool = false
@@ -49,9 +52,25 @@ func _ready():
 	# Conectar el botón de cancelación
 	cancel_placement_button.pressed.connect(_on_cancel_placement_pressed)
 	cancel_placement_button.visible = false  # Inicialmente oculto
-
+	
+	# Conectar botón de pausa
+	if pause_button:
+		pause_button.pressed.connect(_on_pause_button_pressed)
 	# Actualizar UI inicial
+	
 	_update_ui()
+	
+	# Verificar que el PauseMenu existe
+	if pause_menu:
+		print("PauseMenu encontrado y listo")
+	else:
+		printerr("ERROR: No se encontró PauseMenu en UI")
+
+func _unhandled_input(event):
+	# Detectar ESC para pausar
+	if event.is_action_pressed("ui_cancel"):
+		toggle_pause()
+		get_viewport().set_input_as_handled()
 
 func _process(delta):
 	_update_ui()
@@ -316,9 +335,12 @@ func create_building_placement_indicator(pos: Vector2i) -> Node2D:
 func _on_expansion_position_selected(x: int, y: int):
 	print("🌱 Posición seleccionada para expansión: (", x, ", ", y, ")")
 	
+	# Guardar el costo actual antes de comprar (porque el costo aumenta después)
+	var current_land_cost = grid_manager.land_cost
+	
 	# Intentar comprar terreno
 	if grid_manager.buy_and_place_terrain(x, y):
-		total_spent += grid_manager.land_cost
+		total_spent += current_land_cost
 		create_success_effect(Vector2(x * grid_manager.cell_size, y * grid_manager.cell_size), "¡Terreno comprado!")
 		
 		# Salir del modo expansión después de una compra exitosa
@@ -459,3 +481,31 @@ func get_game_stats() -> Dictionary:
 		"terrain_count": grid_stats.total_cells,
 		"building_count": grid_stats.total_buildings
 	}
+	
+# ============================================================================
+# FUNCIONES DE PAUSA
+# ============================================================================
+
+func toggle_pause():
+	if not pause_menu:
+		printerr("Error: PauseMenu no está disponible")
+		return
+	
+	if pause_menu.visible:
+		# Si el menú está visible, reanudar
+		pause_menu.resume_game()
+	else:
+		# Si el menú está oculto, pausar
+		pause_menu.pause_game()
+
+func open_pause_menu():
+	if pause_menu:
+		pause_menu.pause_game()
+
+func close_pause_menu():
+	if pause_menu:
+		pause_menu.resume_game()
+
+func _on_pause_button_pressed():
+	print("Botón de pausa presionado")
+	open_pause_menu()

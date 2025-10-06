@@ -3,6 +3,7 @@ extends Building
 func _ready():
 	# Configurar las propiedades básicas del edificio
 	building_name = "Chapel"
+	scene_path = "res://escenas/Estructuras/Chapel.tscn"
 	cost = 800
 	points_per_second = 2.5
 	description = "Un lugar de oración y reflexión que satisface las necesidades espirituales de tu gente, mejorando la moral y la estabilidad general del pueblo."

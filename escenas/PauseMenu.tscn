@@ -1,0 +1,106 @@
+[gd_scene load_steps=2 format=3 uid="uid://bs1brnamwrxm5"]
+
+[ext_resource type="Script" uid="uid://b03j42vjllam5" path="res://scripts/PauseMenu.gd" id="1_m1gaa"]
+
+[node name="PauseMenu" type="Control"]
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m1gaa")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="PausePanel" type="Panel" parent="."]
+custom_minimum_size = Vector2(500, 600)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -300.0
+offset_right = 250.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PauseMargin" type="MarginContainer" parent="PausePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="PauseContainer" type="VBoxContainer" parent="PausePanel/PauseMargin"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="PauseTitle" type="Label" parent="PausePanel/PauseMargin/PauseContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
+text = "⏸️ JUEGO PAUSADO"
+
+[node name="HSeparator" type="HSeparator" parent="PausePanel/PauseMargin/PauseContainer"]
+layout_mode = 2
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="PausePanel/PauseMargin/PauseContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ResumeButton" type="Button" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "▶️ Continuar"
+
+[node name="SaveButton" type="Button" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "💾 Guardar Partida"
+
+[node name="LoadButton" type="Button" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "📂 Cargar Partida"
+
+[node name="HSeparator" type="HSeparator" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
+layout_mode = 2
+
+[node name="ReturnMenuButton" type="Button" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "🏠 Volver al Menú Principal"
+
+[node name="QuitButton" type="Button" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "🚪 Salir del Juego"
+
+[node name="InfoLabel" type="Label" parent="PausePanel/PauseMargin/PauseContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.501961, 0.501961, 0.501961, 1)
+theme_override_font_sizes/font_size = 12
+text = "Presiona ESC para pausar/continuar"

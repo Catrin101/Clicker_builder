@@ -21,6 +21,10 @@ func _ready():
 func add_points(amount: int):
 	player_points += amount
 	points_changed.emit(player_points)
+	
+	# NUEVO: Registrar puntos ganados en StatsManager
+	StatsManager.register_points_earned(amount)
+	
 	print("Puntos añadidos: ", amount, " | Total: ", player_points)
 
 # Función para quitar puntos (cuando se compra algo)
@@ -28,6 +32,10 @@ func subtract_points(amount: int) -> bool:
 	if player_points >= amount:
 		player_points -= amount
 		points_changed.emit(player_points)
+		
+		# NUEVO: Registrar puntos gastados en StatsManager
+		StatsManager.register_points_spent(amount)
+		
 		print("Puntos gastados: ", amount, " | Total restante: ", player_points)
 		return true
 	else:
@@ -65,6 +73,9 @@ func recalculate_total_points_per_second():
 	
 	points_per_second_changed.emit(total_points_per_second)
 	print("=== Total puntos por segundo recalculado: ", total_points_per_second, " ===")
+	
+	# NUEVO: Actualizar el PPS más alto alcanzado
+	StatsManager.update_highest_pps(total_points_per_second)
 
 # Función para iniciar el modo de colocación de edificios
 func start_placing_mode(building_scene_path: String):
