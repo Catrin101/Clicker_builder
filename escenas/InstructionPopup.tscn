@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://dsxtkragaumpx"]
+
+[ext_resource type="Script" uid="uid://jxq5xuj257wm" path="res://scripts/InstructionPopup.gd" id="1_t4cw3"]
+
+[node name="InstructionPopup" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_t4cw3")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="MessageLabel" type="Label" parent="MarginContainer"]
+layout_mode = 2

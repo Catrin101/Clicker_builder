@@ -13,6 +13,9 @@ extends Node2D
 @onready var pause_menu: Control = $UI/PauseMenu
 @onready var pause_button: Button = $UI/PauseButton
 
+# Referencias para InstructionPopup
+@export var instruction_popup_scene: PackedScene = preload("res://escenas/InstructionPopup.tscn")
+@onready var ui_layer: CanvasLayer = $UI
 # Variables para la expansión de terreno
 var expansion_mode: bool = false
 var expansion_indicators: Array[Node2D] = []
@@ -140,22 +143,22 @@ func _on_expand_land_button_pressed():
 		hide_expansion_indicators()
 		print("❌ Modo expansión desactivado.")
 
-# CORRECCIÓN: Función create_instruction_popup arreglada
 func create_instruction_popup(message: String, color: Color):
-	var popup_label = Label.new()
-	popup_label.text = message
-	popup_label.add_theme_font_size_override("font_size", 18)
-	popup_label.add_theme_color_override("font_color", color)
-	popup_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	popup_label.position = Vector2(get_viewport().size.x / 2 - 500, 100)
-	popup_label.size = Vector2(400, 50)
+	var popup = instruction_popup_scene.instantiate()
 	
-	get_tree().current_scene.add_child(popup_label)
+	# Configurar posición centrada
+	popup.anchor_left = 0.5
+	popup.anchor_right = 0.5
+	popup.anchor_top = 0.0
+	popup.anchor_bottom = 0.0
+	popup.offset_left = -200
+	popup.offset_right = 200
+	popup.offset_top = 100
+	popup.offset_bottom = 150
+	popup.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	
-	var tween = create_tween()
-	tween.tween_interval(3.0)  # Reemplaza el await con tween_interval
-	tween.tween_property(popup_label, "modulate:a", 0.0, 1.0)
-	tween.tween_callback(popup_label.queue_free)
+	ui_layer.add_child(popup)
+	popup.setup(message, color, 3.0)
 
 func show_expansion_indicators():
 	hide_expansion_indicators()  # Limpiar indicadores anteriores

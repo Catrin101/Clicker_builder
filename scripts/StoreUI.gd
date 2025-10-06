@@ -7,6 +7,8 @@ extends VBoxContainer
 # Precargar la escena del elemento de tienda
 @export var building_item_scene: PackedScene = preload("res://escenas/BuildingStoreItem.tscn")
 
+@export var feedback_panel_scene: PackedScene = preload("res://escenas/Feedback_Panel.tscn")
+
 # Lista de edificios disponibles para comprar - EXPANDIDA
 var available_buildings = [
 	# Edificios Esenciales
@@ -294,48 +296,15 @@ func create_temporary_feedback(message: String, color: Color):
 	if active_feedback_panel and is_instance_valid(active_feedback_panel):
 		active_feedback_panel.queue_free()
 	
-	# Crear un panel de retroalimentación temporal con mejor diseño
-	var feedback_panel = Panel.new()
-	feedback_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	feedback_panel.custom_minimum_size.y = 70  # Aumentar altura
+	# Instanciar el panel de feedback desde la escena
+	var feedback_panel = feedback_panel_scene.instantiate()
 	
-	# Estilo del panel mejorado
-	var style_box = StyleBoxFlat.new()
-	style_box.bg_color = Color(color.r, color.g, color.b, 0.15)
-	style_box.border_color = color
-	style_box.border_width_left = 3
-	style_box.border_width_right = 3
-	style_box.border_width_top = 3
-	style_box.border_width_bottom = 3
-	style_box.corner_radius_top_left = 8
-	style_box.corner_radius_top_right = 8
-	style_box.corner_radius_bottom_left = 8
-	style_box.corner_radius_bottom_right = 8
-	feedback_panel.add_theme_stylebox_override("panel", style_box)
-	
-	# Contenedor con márgenes
-	var margin_container = MarginContainer.new()
-	margin_container.anchors_preset = Control.PRESET_FULL_RECT
-	margin_container.add_theme_constant_override("margin_left", 15)
-	margin_container.add_theme_constant_override("margin_right", 15)
-	margin_container.add_theme_constant_override("margin_top", 10)
-	margin_container.add_theme_constant_override("margin_bottom", 10)
-	
-	var feedback_label = Label.new()
-	feedback_label.text = message
-	feedback_label.add_theme_color_override("font_color", color)
-	feedback_label.add_theme_font_size_override("font_size", 14)
-	feedback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	feedback_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	feedback_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	
-	margin_container.add_child(feedback_label)
-	feedback_panel.add_child(margin_container)
-	
-	# Añadir al contenedor principal (VBoxContainer) en lugar de buildings_list
-	# para que esté dentro del panel visible
+	# Añadir al contenedor principal
 	add_child(feedback_panel)
 	move_child(feedback_panel, 2)  # Posición después del título y separador
+	
+	# Configurar el panel
+	feedback_panel.setup(message, color, 2.5)
 	
 	# Guardar referencia al panel activo
 	active_feedback_panel = feedback_panel

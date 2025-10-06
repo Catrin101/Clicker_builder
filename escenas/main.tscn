@@ -59,14 +59,15 @@ text = "Expandir Terreno"
 metadata/_edit_group_ = true
 
 [node name="CancelPlacementButton" type="Button" parent="UI"]
-visible = false
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 140.0
-offset_right = 328.0
-offset_bottom = 59.0
-grow_horizontal = 2
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -188.0
+offset_top = -59.0
+grow_horizontal = 0
+grow_vertical = 0
 theme_override_font_sizes/font_size = 28
 text = "Cancelar"
 metadata/_edit_group_ = true
@@ -571,17 +572,12 @@ text = "✅ Cerrar"
 [node name="PauseMenu" parent="UI" instance=ExtResource("14_a5wrc")]
 
 [node name="PauseButton" type="Button" parent="UI"]
-anchors_preset = 3
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -103.0
-offset_top = -48.0
-offset_right = -5.0
-offset_bottom = -5.0
+offset_left = -98.0
+offset_bottom = 43.0
 grow_horizontal = 0
-grow_vertical = 0
 theme_override_font_sizes/font_size = 16
 text = "⏸️ PAUSA"
 
