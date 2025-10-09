@@ -10,11 +10,11 @@ config_version=5
 
 [application]
 
-config/name="Clicker"
+config/name="SkyClick"
 config/version="1.0.0"
 run/main_scene="uid://37nooq32dnhx"
 config/features=PackedStringArray("4.4", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="uid://b8j5sv44tdqs1"
 
 [autoload]
 
@@ -27,6 +27,8 @@ SaveSystem="*res://scripts/SaveSystem.gd"
 
 window/size/viewport_width=1600
 window/size/viewport_height=900
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [dotnet]
 

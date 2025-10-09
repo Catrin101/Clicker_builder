@@ -9,6 +9,7 @@ extends Node2D
 @onready var grid_manager: Node2D = $GridManager
 @onready var store_ui: VBoxContainer = $UI/StorePanel/StoreUI
 @onready var cancel_placement_button: Button = $UI/CancelPlacementButton
+@onready var music_player: AudioStreamPlayer = $MusicPlayer
 # Referencia al menú de pausa
 @onready var pause_menu: Control = $UI/PauseMenu
 @onready var pause_button: Button = $UI/PauseButton
@@ -63,6 +64,13 @@ func _ready():
 	
 	_update_ui()
 	
+	# Asegurar que la música haga loop
+	if music_player and music_player.stream:
+		if music_player.stream is AudioStreamOggVorbis:
+			music_player.stream.loop = true
+		elif music_player.stream is AudioStreamWAV:
+			music_player.stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+			
 	# Verificar que el PauseMenu existe
 	if pause_menu:
 		print("PauseMenu encontrado y listo")

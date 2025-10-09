@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://37nooq32dnhx"]
+[gd_scene load_steps=7 format=3 uid="uid://37nooq32dnhx"]
 
 [ext_resource type="Script" uid="uid://tr75osavtvmf" path="res://scripts/Menu.gd" id="1_vdanu"]
+[ext_resource type="PackedScene" uid="uid://cl07lm404rm7a" path="res://escenas/FondaMain.tscn" id="2_2owot"]
+[ext_resource type="PackedScene" uid="uid://ddiw37dkhe3rm" path="res://escenas/clouds_layer.tscn" id="3_2owot"]
+[ext_resource type="AudioStream" uid="uid://c3jdgshqk10dk" path="res://audios/whamp.ogg" id="4_5t3kx"]
+[ext_resource type="Script" uid="uid://hcfpubg7d76x" path="res://scripts/ButtonSFX.gd" id="5_56ah5"]
+[ext_resource type="AudioStream" uid="uid://cvv4xl7wqlhul" path="res://audios/womp.ogg" id="6_56ah5"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -11,6 +16,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vdanu")
 
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="FondaMain" parent="Node2D" instance=ExtResource("2_2owot")]
+position = Vector2(685, 193)
+scale = Vector2(0.34, 0.34)
+
+[node name="CloudsLayer" parent="Node2D" instance=ExtResource("3_2owot")]
+position = Vector2(425, 526)
+scale = Vector2(0.5, 0.5)
+
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -18,7 +33,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.101961, 0.101961, 0.180392, 1)
+color = Color(0.102, 0.102, 0.18, 0.376)
 
 [node name="MenuContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -37,7 +52,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
 theme_override_font_sizes/font_size = 48
-text = "🏰 CONSTRUCTOR DE CIUDAD 🏰"
+text = "🏰 SkyClick 🏰"
 
 [node name="Spacer1" type="Control" parent="MenuContainer/MenuVBox"]
 custom_minimum_size = Vector2(0, 50)
@@ -54,12 +69,20 @@ size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 20
 text = "🆕 Nueva Partida"
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="MenuContainer/MenuVBox/ButtonsContainer/NewGameButton"]
+stream = ExtResource("4_5t3kx")
+script = ExtResource("5_56ah5")
+
 [node name="LoadGameButton" type="Button" parent="MenuContainer/MenuVBox/ButtonsContainer"]
 custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 20
 text = "📂 Cargar Partida"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="MenuContainer/MenuVBox/ButtonsContainer/LoadGameButton"]
+stream = ExtResource("4_5t3kx")
+script = ExtResource("5_56ah5")
 
 [node name="QuitButton" type="Button" parent="MenuContainer/MenuVBox/ButtonsContainer"]
 custom_minimum_size = Vector2(300, 60)
@@ -68,9 +91,39 @@ size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 20
 text = "🚪 Salir"
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="MenuContainer/MenuVBox/ButtonsContainer/QuitButton"]
+stream = ExtResource("6_56ah5")
+script = ExtResource("5_56ah5")
+
 [node name="VersionLabel" type="Label" parent="MenuContainer/MenuVBox/ButtonsContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0.501961, 0.501961, 0.501961, 1)
 theme_override_font_sizes/font_size = 14
 text = "v1.0.0"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -350.0
+offset_top = -227.0
+offset_right = -11.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+bbcode_enabled = true
+text = "[b]Creditos[/b]
+
+[b]Sprites de Edificiios y terrenos[/b]
+SketchyLogic
+[b]Sprites de la UI y los escenarios de fondo[/b]
+www.kenney.nl
+
+[b]Musica y Audios del Juego[/b]
+SketchyLogic"
+fit_content = true
+horizontal_alignment = 2

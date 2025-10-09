@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://bs1brnamwrxm5"]
+[gd_scene load_steps=5 format=3 uid="uid://bs1brnamwrxm5"]
 
 [ext_resource type="Script" uid="uid://b03j42vjllam5" path="res://scripts/PauseMenu.gd" id="1_m1gaa"]
+[ext_resource type="AudioStream" uid="uid://c3jdgshqk10dk" path="res://audios/whamp.ogg" id="2_46crp"]
+[ext_resource type="Script" uid="uid://hcfpubg7d76x" path="res://scripts/ButtonSFX.gd" id="3_kilm7"]
+[ext_resource type="AudioStream" uid="uid://cvv4xl7wqlhul" path="res://audios/womp.ogg" id="4_d6gah"]
 
 [node name="PauseMenu" type="Control"]
 process_mode = 2
@@ -71,17 +74,29 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "▶️ Continuar"
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer/ResumeButton"]
+stream = ExtResource("2_46crp")
+script = ExtResource("3_kilm7")
+
 [node name="SaveButton" type="Button" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "💾 Guardar Partida"
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer/SaveButton"]
+stream = ExtResource("2_46crp")
+script = ExtResource("3_kilm7")
+
 [node name="LoadButton" type="Button" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "📂 Cargar Partida"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer/LoadButton"]
+stream = ExtResource("2_46crp")
+script = ExtResource("3_kilm7")
 
 [node name="HSeparator" type="HSeparator" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
 layout_mode = 2
@@ -92,11 +107,19 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 22
 text = "🏠 Volver al Menú Principal"
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer/ReturnMenuButton"]
+stream = ExtResource("4_d6gah")
+script = ExtResource("3_kilm7")
+
 [node name="QuitButton" type="Button" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 text = "🚪 Salir del Juego"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer/QuitButton"]
+stream = ExtResource("4_d6gah")
+script = ExtResource("3_kilm7")
 
 [node name="InfoLabel" type="Label" parent="PausePanel/PauseMargin/PauseContainer"]
 layout_mode = 2

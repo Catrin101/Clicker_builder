@@ -1,6 +1,9 @@
 # GridManager.gd - Gestor de la cuadrícula - CORREGIDO
 extends Node2D
 
+@onready var terrain_place_sound: AudioStreamPlayer = $TerrainPlaceSound
+@onready var building_place_sound: AudioStreamPlayer = $BuildingPlaceSound
+
 # Diccionario para almacenar las casillas (clave: "x,y", valor: nodo)
 var grid_cells: Dictionary = {}
 
@@ -73,6 +76,10 @@ func buy_and_place_terrain(x: int, y: int) -> bool:
 		land_cost = int(land_cost * land_cost_multiplier)
 		
 		terrain_placed.emit(x, y)
+		
+		if terrain_place_sound:
+			terrain_place_sound.play()
+			
 		print("Nuevo terreno colocado en (", x, ", ", y, "). Próximo costo: ", land_cost)
 		return true
 	
@@ -154,6 +161,10 @@ func place_building(x: int, y: int, building_scene_path: String) -> bool:
 	call_deferred("notify_neighbors_synergy_change", x, y)
 	
 	building_placed.emit(x, y)
+	
+	if building_place_sound:
+		building_place_sound.play()
+		
 	print("=== Fin colocación edificio ===\n")
 	
 	return true

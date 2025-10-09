@@ -316,7 +316,8 @@ func create_temporary_feedback(message: String, color: Color):
 	tween.tween_callback(func(): 
 		if active_feedback_panel == feedback_panel:
 			active_feedback_panel = null
-		feedback_panel.queue_free()
+		if is_instance_valid(feedback_panel):
+			feedback_panel.queue_free()
 	)
 
 func _on_points_changed(new_points: int):
