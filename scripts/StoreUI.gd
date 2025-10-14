@@ -1,13 +1,18 @@
-# StoreUI.gd - Interfaz de la tienda de edificios - VERSIÓN CORREGIDA CON SEPARACIÓN
+# StoreUI.gd - VERSIÓN CORREGIDA PARA EXPORTACIÓN
 extends VBoxContainer
 
 # Referencias a nodos
 @onready var buildings_list: VBoxContainer = $BuildingsList
 
-# Precargar la escena del elemento de tienda
-@export var building_item_scene: PackedScene = preload("res://escenas/BuildingStoreItem.tscn")
+# Rutas de recursos (NO usar preload en @export)
+var building_item_scene_path: String = "res://escenas/BuildingStoreItem.tscn"
+var feedback_panel_scene_path: String = "res://escenas/Feedback_Panel.tscn"
 
-# Lista de edificios disponibles para comprar - EXPANDIDA
+# Escenas cargadas
+var building_item_scene: PackedScene = null
+var feedback_panel_scene: PackedScene = null
+
+# Lista de edificios disponibles para comprar
 var available_buildings = [
 	# Edificios Esenciales
 	{
@@ -98,27 +103,93 @@ var current_category: String = "Todos"
 # Array para mantener referencias a los elementos de la tienda
 var building_items: Array[Panel] = []
 
-# Referencia al panel de feedback activo (solo uno a la vez)
+# Referencia al panel de feedback activo
 var active_feedback_panel: Control = null
 
 func _ready():
-	# Configurar el contenedor principal con separación mejorada
-	size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	add_theme_constant_override("separation", 5)  # Separación entre elementos hijos
+	print("🏪 StoreUI iniciando...")
 	
-	# Asegurar que buildings_list tenga separación adecuada
-	if buildings_list:
-		buildings_list.add_theme_constant_override("separation", 8)  # Separación entre BuildingStoreItems
+	# CRÍTICO: Verificar que buildings_list existe
+	if not buildings_list:
+		printerr("❌ ERROR CRÍTICO: BuildingsList no encontrado en StoreUI!")
+		printerr("   Ruta esperada: $BuildingsList")
+		printerr("   Nodos hijos disponibles:")
+		for child in get_children():
+			printerr("     - ", child.name, " (", child.get_class(), ")")
+		return
+	
+	print("✅ BuildingsList encontrado correctamente")
+	
+	# Configurar el contenedor principal
+	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	add_theme_constant_override("separation", 5)
+	
+	# Configurar buildings_list
+	buildings_list.add_theme_constant_override("separation", 8)
+	
+	# CRÍTICO: Cargar recursos de forma segura
+	if not load_required_resources():
+		printerr("❌ ERROR: No se pudieron cargar los recursos necesarios")
+		return
+	
+	print("✅ Recursos cargados exitosamente")
 	
 	# Crear los elementos de la tienda
+	await get_tree().process_frame  # Esperar un frame
 	create_store_items()
 	
 	# Conectar señales del GameManager
-	GameManager.points_changed.connect(_on_points_changed)
-	GameManager.building_placement_started.connect(_on_building_placement_started)
-	GameManager.building_placement_cancelled.connect(_on_building_placement_cancelled)
+	if GameManager:
+		GameManager.points_changed.connect(_on_points_changed)
+		GameManager.building_placement_started.connect(_on_building_placement_started)
+		GameManager.building_placement_cancelled.connect(_on_building_placement_cancelled)
+		print("✅ Señales de GameManager conectadas")
+	else:
+		printerr("❌ ERROR: GameManager no disponible")
+	
+	print("✅ StoreUI inicializado completamente")
+
+# NUEVA FUNCIÓN: Cargar recursos de forma segura
+func load_required_resources() -> bool:
+	print("📦 Cargando recursos...")
+	
+	# Intentar cargar building_item_scene
+	if ResourceLoader.exists(building_item_scene_path):
+		building_item_scene = load(building_item_scene_path)
+		if building_item_scene:
+			print("  ✅ BuildingStoreItem.tscn cargado")
+		else:
+			printerr("  ❌ Error cargando BuildingStoreItem.tscn")
+			return false
+	else:
+		printerr("  ❌ No existe: ", building_item_scene_path)
+		return false
+	
+	# Intentar cargar feedback_panel_scene
+	if ResourceLoader.exists(feedback_panel_scene_path):
+		feedback_panel_scene = load(feedback_panel_scene_path)
+		if feedback_panel_scene:
+			print("  ✅ Feedback_Panel.tscn cargado")
+		else:
+			printerr("  ❌ Error cargando Feedback_Panel.tscn (no crítico)")
+			# No es crítico, continuar sin él
+	else:
+		printerr("  ⚠️ No existe Feedback_Panel.tscn (no crítico)")
+	
+	return true
 
 func create_store_items():
+	print("🏗️ Creando elementos de la tienda...")
+	print("   Edificios disponibles: ", available_buildings.size())
+	
+	if not building_item_scene:
+		printerr("❌ ERROR: building_item_scene no está cargado")
+		return
+	
+	if not buildings_list:
+		printerr("❌ ERROR: buildings_list no existe")
+		return
+	
 	# Limpiar la lista actual
 	clear_building_items()
 	
@@ -130,52 +201,69 @@ func create_store_items():
 			categories[category] = []
 		categories[category].append(building_data)
 	
+	print("   Categorías encontradas: ", categories.keys())
+	
 	# Crear elementos organizados por categoría
 	var is_first_category = true
+	var items_created = 0
+	
 	for category in categories:
+		print("   📂 Procesando categoría: ", category)
+		
 		# Añadir separador antes de cada categoría (excepto la primera)
 		if not is_first_category:
 			var category_separator = create_category_separator()
 			buildings_list.add_child(category_separator)
 		
 		# Añadir encabezado de categoría
-		if categories.size() > 1:  # Solo mostrar categorías si hay más de una
+		if categories.size() > 1:
 			var category_header = create_category_header(category)
 			buildings_list.add_child(category_header)
 		
-		# Añadir edificios de esta categoría con separación mejorada
+		# Añadir edificios de esta categoría
 		for i in range(categories[category].size()):
 			var building_data = categories[category][i]
-			var building_item = create_building_item_from_scene(building_data)
-			buildings_list.add_child(building_item)
-			building_items.append(building_item)
+			print("      🏢 Creando item para: ", building_data.name)
 			
-			# Añadir un pequeño separador entre edificios (excepto después del último de la categoría)
+			var building_item = create_building_item_from_scene(building_data)
+			
+			if building_item:
+				buildings_list.add_child(building_item)
+				building_items.append(building_item)
+				items_created += 1
+				print("         ✅ Item creado exitosamente")
+			else:
+				printerr("         ❌ Error creando item para: ", building_data.name)
+			
+			# Añadir separador entre edificios
 			if i < categories[category].size() - 1:
 				var item_separator = create_item_separator()
 				buildings_list.add_child(item_separator)
 		
 		is_first_category = false
+	
+	print("✅ Elementos de tienda creados: ", items_created, "/", available_buildings.size())
+	
+	# Forzar actualización visual
+	await get_tree().process_frame
+	buildings_list.queue_redraw()
 
 func clear_building_items():
-	# Limpiar referencias
 	building_items.clear()
 	
-	# Eliminar todos los hijos de la lista
-	for child in buildings_list.get_children():
-		child.queue_free()
+	if buildings_list:
+		for child in buildings_list.get_children():
+			child.queue_free()
 
 func create_category_separator() -> Control:
-	"""Crea un separador más grande entre categorías"""
 	var separator = Control.new()
-	separator.custom_minimum_size = Vector2(0, 20)  # Espacio de 20px entre categorías
+	separator.custom_minimum_size = Vector2(0, 20)
 	separator.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return separator
 
 func create_item_separator() -> Control:
-	"""Crea un pequeño separador entre elementos individuales"""
 	var separator = Control.new()
-	separator.custom_minimum_size = Vector2(0, 4)  # Espacio de 4px entre elementos
+	separator.custom_minimum_size = Vector2(0, 4)
 	separator.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return separator
 
@@ -183,20 +271,17 @@ func create_category_header(category: String) -> Control:
 	var container = VBoxContainer.new()
 	container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
-	# Separador superior más visible
 	var separator_top = HSeparator.new()
 	separator_top.custom_minimum_size.y = 2
 	separator_top.add_theme_color_override("color", Color(0.6, 0.6, 0.6, 0.8))
 	container.add_child(separator_top)
 	
-	# Contenedor para la etiqueta con padding
 	var label_container = MarginContainer.new()
 	label_container.add_theme_constant_override("margin_top", 8)
 	label_container.add_theme_constant_override("margin_bottom", 8)
 	label_container.add_theme_constant_override("margin_left", 10)
 	label_container.add_theme_constant_override("margin_right", 10)
 	
-	# Etiqueta de categoría
 	var label = Label.new()
 	label.text = "=== " + category.to_upper() + " ==="
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -207,7 +292,6 @@ func create_category_header(category: String) -> Control:
 	label_container.add_child(label)
 	container.add_child(label_container)
 	
-	# Separador inferior
 	var separator_bottom = HSeparator.new()
 	separator_bottom.custom_minimum_size.y = 2
 	separator_bottom.add_theme_color_override("color", Color(0.6, 0.6, 0.6, 0.8))
@@ -216,17 +300,24 @@ func create_category_header(category: String) -> Control:
 	return container
 
 func create_building_item_from_scene(building_data: Dictionary) -> Panel:
-	# Instanciar la escena del elemento de tienda
+	if not building_item_scene:
+		printerr("❌ building_item_scene no está disponible")
+		return null
+	
+	# Instanciar la escena
 	var building_item = building_item_scene.instantiate()
 	
-	# Configurar size flags para que se ajuste correctamente con mejor espaciado
-	building_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	building_item.size_flags_vertical = Control.SIZE_SHRINK_CENTER  # Cambiar para que se ajuste al contenido
-	# NO establecer custom_minimum_size aquí - se calculará dinámicamente
+	if not building_item:
+		printerr("❌ Error al instanciar building_item_scene")
+		return null
 	
-	# Añadir un poco de margen interno al panel
+	# Configurar size flags
+	building_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	building_item.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	
+	# Añadir estilo visual
 	var style_box = StyleBoxFlat.new()
-	style_box.bg_color = Color(0.2, 0.2, 0.2, 0.8)  # Color de fondo sutil
+	style_box.bg_color = Color(0.2, 0.2, 0.2, 0.8)
 	style_box.border_color = Color(0.4, 0.4, 0.4, 0.6)
 	style_box.border_width_left = 1
 	style_box.border_width_right = 1
@@ -243,34 +334,33 @@ func create_building_item_from_scene(building_data: Dictionary) -> Panel:
 	
 	building_item.add_theme_stylebox_override("panel", style_box)
 	
-	# IMPORTANTE: Llamar a _ready primero antes de setup_building_data
-	# Esto se hace automáticamente cuando se añade al árbol de nodos
-	
-	# Configurar los datos del edificio usando call_deferred para asegurar que _ready se ejecute primero
-	building_item.call_deferred("setup_building_data", building_data)
+	# CRÍTICO: Configurar datos INMEDIATAMENTE sin call_deferred
+	# El item ya tendrá su _ready() llamado cuando se añada al árbol
+	if building_item.has_method("setup_building_data"):
+		# Esperar a que el item esté en el árbol
+		building_item.ready.connect(func(): 
+			building_item.setup_building_data(building_data)
+		, CONNECT_ONE_SHOT)
 	
 	# Conectar señal de compra
-	building_item.building_purchase_requested.connect(_on_building_purchase_requested)
+	if building_item.has_signal("building_purchase_requested"):
+		building_item.building_purchase_requested.connect(_on_building_purchase_requested)
 	
 	return building_item
 
 func _on_building_purchase_requested(building_data: Dictionary):
 	print("Edificio seleccionado: ", building_data.name)
 	
-	# Verificar si el jugador puede comprarlo
 	if not GameManager.can_afford(building_data.cost):
 		print("No tienes suficientes puntos para comprar: ", building_data.name)
 		show_cannot_afford_feedback(building_data.name)
 		return
 	
-	# Restar los puntos
 	if GameManager.subtract_points(building_data.cost):
 		print("¡", building_data.name, " comprado por ", building_data.cost, " puntos!")
 		show_purchase_feedback(building_data.name)
-		# Iniciar modo de colocación
 		GameManager.start_placing_mode(building_data.scene_path)
 		
-		# Encontrar el elemento que hizo la compra y mostrar feedback visual
 		for item in building_items:
 			if item.get_building_data() == building_data:
 				item.show_purchase_feedback(true, "✅ Comprado! Selecciona ubicación")
@@ -279,7 +369,6 @@ func _on_building_purchase_requested(building_data: Dictionary):
 func show_cannot_afford_feedback(building_name: String):
 	create_temporary_feedback("❌ No tienes suficientes puntos para " + building_name + "!", Color.RED)
 	
-	# También mostrar feedback en el elemento específico
 	for item in building_items:
 		var item_data = item.get_building_data()
 		if item_data.get("name", "") == building_name:
@@ -290,88 +379,50 @@ func show_purchase_feedback(building_name: String):
 	create_temporary_feedback("✅ " + building_name + " comprado! Selecciona donde colocarlo.", Color.GREEN)
 
 func create_temporary_feedback(message: String, color: Color):
-	# Remover feedback anterior si existe
 	if active_feedback_panel and is_instance_valid(active_feedback_panel):
 		active_feedback_panel.queue_free()
 	
-	# Crear un panel de retroalimentación temporal con mejor diseño
-	var feedback_panel = Panel.new()
-	feedback_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	feedback_panel.custom_minimum_size.y = 70  # Aumentar altura
+	# Solo crear feedback si la escena existe
+	if not feedback_panel_scene:
+		print("⚠️ Feedback visual no disponible (feedback_panel_scene no cargado)")
+		return
 	
-	# Estilo del panel mejorado
-	var style_box = StyleBoxFlat.new()
-	style_box.bg_color = Color(color.r, color.g, color.b, 0.15)
-	style_box.border_color = color
-	style_box.border_width_left = 3
-	style_box.border_width_right = 3
-	style_box.border_width_top = 3
-	style_box.border_width_bottom = 3
-	style_box.corner_radius_top_left = 8
-	style_box.corner_radius_top_right = 8
-	style_box.corner_radius_bottom_left = 8
-	style_box.corner_radius_bottom_right = 8
-	feedback_panel.add_theme_stylebox_override("panel", style_box)
+	var feedback_panel = feedback_panel_scene.instantiate()
 	
-	# Contenedor con márgenes
-	var margin_container = MarginContainer.new()
-	margin_container.anchors_preset = Control.PRESET_FULL_RECT
-	margin_container.add_theme_constant_override("margin_left", 15)
-	margin_container.add_theme_constant_override("margin_right", 15)
-	margin_container.add_theme_constant_override("margin_top", 10)
-	margin_container.add_theme_constant_override("margin_bottom", 10)
-	
-	var feedback_label = Label.new()
-	feedback_label.text = message
-	feedback_label.add_theme_color_override("font_color", color)
-	feedback_label.add_theme_font_size_override("font_size", 14)
-	feedback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	feedback_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	feedback_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	
-	margin_container.add_child(feedback_label)
-	feedback_panel.add_child(margin_container)
-	
-	# Añadir al contenedor principal (VBoxContainer) en lugar de buildings_list
-	# para que esté dentro del panel visible
 	add_child(feedback_panel)
-	move_child(feedback_panel, 2)  # Posición después del título y separador
+	move_child(feedback_panel, 2)
 	
-	# Guardar referencia al panel activo
+	feedback_panel.setup(message, color, 2.5)
 	active_feedback_panel = feedback_panel
 	
-	# Crear tween para efecto de desvanecimiento
 	var tween = create_tween()
-	tween.tween_interval(2.5)  # Mostrar por 2.5 segundos
+	tween.tween_interval(2.5)
 	tween.tween_property(feedback_panel, "modulate:a", 0.0, 1.0)
 	tween.tween_callback(func(): 
 		if active_feedback_panel == feedback_panel:
 			active_feedback_panel = null
-		feedback_panel.queue_free()
+		if is_instance_valid(feedback_panel):
+			feedback_panel.queue_free()
 	)
 
 func _on_points_changed(new_points: int):
-	# Los elementos individuales se actualizan automáticamente
-	# gracias a sus propias conexiones con GameManager
 	pass
 
 func _on_building_placement_started(building_scene: String):
-	# Cambiar el texto del título para indicar el modo de colocación
-	var title_label = get_parent().get_node("StoreTitle")
+	var title_label = get_parent().get_node_or_null("StoreTitle")
 	if title_label:
-		title_label.text = "🏗️ MODO COLOCACIÓN"
+		title_label.text = "🗺️ MODO COLOCACIÓN"
 		title_label.add_theme_color_override("font_color", Color.YELLOW)
 
 func _on_building_placement_cancelled():
 	print("Colocación de edificio cancelada.")
 	
-	# Restaurar el texto del título
-	var title_label = get_parent().get_node("StoreTitle")
+	var title_label = get_parent().get_node_or_null("StoreTitle")
 	if title_label:
 		title_label.text = "TIENDA DE EDIFICIOS"
 		title_label.add_theme_color_override("font_color", Color.WHITE)
 
-# Funciones adicionales (mantenidas igual)
+# Funciones auxiliares (mantenidas igual)
 func add_building_to_store(building_data: Dictionary):
 	available_buildings.append(building_data)
 	call_deferred("create_store_items")

@@ -1,0 +1,131 @@
+[gd_scene load_steps=6 format=3 uid="uid://ddiw37dkhe3rm"]
+
+[ext_resource type="Script" uid="uid://ckdq3rd3fite2" path="res://scripts/CloudsLayer.gd" id="1_pj2p4"]
+[ext_resource type="Texture2D" uid="uid://becvtr51w3qal" path="res://sprites/Nubes/nube1.png" id="2_dcdcu"]
+[ext_resource type="Texture2D" uid="uid://d06rj0s406bhk" path="res://sprites/Nubes/nube2.png" id="3_g6uor"]
+[ext_resource type="Texture2D" uid="uid://byseuurk2ftpu" path="res://sprites/Nubes/nube3.png" id="4_o6dcf"]
+[ext_resource type="Texture2D" uid="uid://qlqvgerq7ahv" path="res://sprites/Nubes/nube4.png" id="5_bs8h7"]
+
+[node name="CloudsLayer" type="Node2D"]
+script = ExtResource("1_pj2p4")
+wrap_margin = 2000.0
+
+[node name="Sprite2D1" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-1683, -1739)
+texture = ExtResource("2_dcdcu")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-806, -1227)
+texture = ExtResource("3_g6uor")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-1576, -466)
+texture = ExtResource("4_o6dcf")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(304, -1352)
+texture = ExtResource("5_bs8h7")
+
+[node name="Sprite2D5" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-384.5, -942.5)
+texture = ExtResource("2_dcdcu")
+
+[node name="Sprite2D6" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(492.5, -430.5)
+texture = ExtResource("3_g6uor")
+
+[node name="Sprite2D7" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-277.5, 330.5)
+texture = ExtResource("4_o6dcf")
+
+[node name="Sprite2D8" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(1602.5, -555.5)
+texture = ExtResource("5_bs8h7")
+
+[node name="Sprite2D9" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-1530.5, 320.5)
+texture = ExtResource("2_dcdcu")
+
+[node name="Sprite2D10" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-653.5, 832.5)
+texture = ExtResource("3_g6uor")
+
+[node name="Sprite2D11" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-1423.5, 1593.5)
+texture = ExtResource("4_o6dcf")
+
+[node name="Sprite2D12" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(456.5, 707.5)
+texture = ExtResource("5_bs8h7")
+
+[node name="Sprite2D13" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-223.5, -1810.5)
+texture = ExtResource("2_dcdcu")
+
+[node name="Sprite2D14" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(653.5, -1298.5)
+texture = ExtResource("3_g6uor")
+
+[node name="Sprite2D15" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-116.5, -537.5)
+texture = ExtResource("4_o6dcf")
+
+[node name="Sprite2D16" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(1763.5, -1423.5)
+texture = ExtResource("5_bs8h7")
+
+[node name="Sprite2D17" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-295.5, 965.5)
+texture = ExtResource("2_dcdcu")
+
+[node name="Sprite2D18" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(581.5, 1477.5)
+texture = ExtResource("3_g6uor")
+
+[node name="Sprite2D19" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(-188.5, 2238.5)
+texture = ExtResource("4_o6dcf")
+
+[node name="Sprite2D20" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(1691.5, 1352.5)
+texture = ExtResource("5_bs8h7")
+
+[node name="Sprite2D21" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(984.5, -297.5)
+texture = ExtResource("2_dcdcu")
+
+[node name="Sprite2D22" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(1861.5, 214.5)
+texture = ExtResource("3_g6uor")
+
+[node name="Sprite2D23" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(1091.5, 975.5)
+texture = ExtResource("4_o6dcf")
+
+[node name="Sprite2D24" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.292)
+position = Vector2(2971.5, 89.5)
+texture = ExtResource("5_bs8h7")

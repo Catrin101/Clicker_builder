@@ -10,7 +10,7 @@ extends Camera2D
 @export var drag_sensitivity: float = 1.0
 
 # Límites de movimiento
-@export var movement_limit: float = 5000.0
+@export var movement_limit: float = 2000.0
 
 # Variables internas
 var is_dragging: bool = false

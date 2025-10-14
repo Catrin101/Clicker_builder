@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bqn3yj40rpra8"]
+[gd_scene load_steps=5 format=3 uid="uid://bqn3yj40rpra8"]
 
 [ext_resource type="Script" uid="uid://cv1p2dpxxmwam" path="res://scripts/Terrain.gd" id="1_ovm1t"]
+[ext_resource type="Texture2D" uid="uid://cbmasoeu1wee0" path="res://sprites/tiles/tile_0056.png" id="2_i32w5"]
 [ext_resource type="Texture2D" uid="uid://fl4o21bj7qpt" path="res://sprites/tiles/newgrass.png" id="2_yvdi7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i32w5"]
@@ -8,6 +9,24 @@ size = Vector2(128, 128)
 
 [node name="Terrain" type="Node2D"]
 script = ExtResource("1_ovm1t")
+
+[node name="tierraContainer" type="Node2D" parent="."]
+z_index = -10
+
+[node name="Sprite2D4" type="Sprite2D" parent="tierraContainer"]
+position = Vector2(0, 84)
+scale = Vector2(5.375, 1)
+texture = ExtResource("2_i32w5")
+
+[node name="Sprite2D3" type="Sprite2D" parent="tierraContainer"]
+position = Vector2(0, 77)
+scale = Vector2(7.625, 1)
+texture = ExtResource("2_i32w5")
+
+[node name="Sprite2D2" type="Sprite2D" parent="tierraContainer"]
+position = Vector2(0, 69)
+scale = Vector2(8, 1)
+texture = ExtResource("2_i32w5")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_yvdi7")

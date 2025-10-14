@@ -6,6 +6,16 @@
 
 [node name="BaseMilitar" instance=ExtResource("1_lprcm")]
 script = ExtResource("2_lprcm")
+building_name = "BaseMilitar"
+scene_path = "res://escenas/Estructuras/BaseMilitar.tscn"
+cost = 2500
+points_per_second = 6.0
+description = "Todo ciudad en crecimiento nesesita poteccion de una buena Milicia"
+synergies = {
+"Castle": 10,
+"Chapel": -5,
+"Tavern": 5
+}
 
 [node name="Sprite2D" parent="." index="0"]
 scale = Vector2(0.280632, 0.364641)

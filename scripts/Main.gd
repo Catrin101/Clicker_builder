@@ -9,10 +9,15 @@ extends Node2D
 @onready var grid_manager: Node2D = $GridManager
 @onready var store_ui: VBoxContainer = $UI/StorePanel/StoreUI
 @onready var cancel_placement_button: Button = $UI/CancelPlacementButton
+@onready var music_player: AudioStreamPlayer = $MusicPlayer
 # Referencia al menú de pausa
 @onready var pause_menu: Control = $UI/PauseMenu
 @onready var pause_button: Button = $UI/PauseButton
+@onready var options_menu: Control = $UI/OptionsMenu
 
+# Referencias para InstructionPopup
+@export var instruction_popup_scene: PackedScene = preload("res://escenas/InstructionPopup.tscn")
+@onready var ui_layer: CanvasLayer = $UI
 # Variables para la expansión de terreno
 var expansion_mode: bool = false
 var expansion_indicators: Array[Node2D] = []
@@ -26,6 +31,10 @@ var points_timer: Timer
 # Variables para estadísticas
 var buildings_built: int = 0
 var total_spent: int = 0
+
+# ============================================================================
+# AGREGAR ESTO AL FINAL DE LA FUNCIÓN _ready() EN Main.gd
+# ============================================================================
 
 func _ready():
 	# Crear y configurar el timer para puntos automáticos
@@ -51,20 +60,88 @@ func _ready():
 	
 	# Conectar el botón de cancelación
 	cancel_placement_button.pressed.connect(_on_cancel_placement_pressed)
-	cancel_placement_button.visible = false  # Inicialmente oculto
+	cancel_placement_button.visible = false
 	
 	# Conectar botón de pausa
 	if pause_button:
 		pause_button.pressed.connect(_on_pause_button_pressed)
-	# Actualizar UI inicial
 	
+	# Actualizar UI inicial
 	_update_ui()
+	
+	# Asegurar que la música haga loop
+	if music_player and music_player.stream:
+		if music_player.stream is AudioStreamOggVorbis:
+			music_player.stream.loop = true
+		elif music_player.stream is AudioStreamWAV:
+			music_player.stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	
 	# Verificar que el PauseMenu existe
 	if pause_menu:
 		print("PauseMenu encontrado y listo")
 	else:
 		printerr("ERROR: No se encontró PauseMenu en UI")
+	
+	# ============================================================================
+	# 🔥 CRÍTICO: DETECTAR CARGA DE PARTIDA PENDIENTE
+	# ============================================================================
+	# Esperar frames adicionales para asegurar que todo esté inicializado
+	await get_tree().process_frame
+	await get_tree().process_frame
+	
+	print("\n🔍 VERIFICANDO CARGA PENDIENTE...")
+	print("   SaveSystem existe: ", SaveSystem != null)
+	print("   pending_load_data existe: ", SaveSystem.pending_load_data != null)
+	
+	# Verificar si hay datos pendientes de carga
+	if SaveSystem and is_instance_valid(SaveSystem.pending_load_data):
+		print("🔄 ¡CARGA PENDIENTE DETECTADA!")
+		print("   Puntos a cargar: ", SaveSystem.pending_load_data.player_points)
+		
+		# Copiar referencia local ANTES de limpiar
+		var load_data = SaveSystem.pending_load_data
+		
+		# Limpiar la variable global INMEDIATAMENTE
+		SaveSystem.pending_load_data = null
+		
+		# Verificar que los datos son válidos
+		if is_instance_valid(load_data):
+			print("✅ Datos válidos, iniciando aplicación...")
+			await SaveSystem.apply_save_data(load_data)
+			print("✅ Datos aplicados exitosamente desde Main._ready()")
+			
+			# Emitir señal de carga completada
+			SaveSystem.load_completed.emit(true, "slot_1")
+		else:
+			printerr("❌ Error: load_data local no es válido")
+			SaveSystem.load_completed.emit(false, "slot_1")
+	else:
+		print("ℹ️ No hay datos de carga pendientes (inicio normal)")
+	
+	print("✅ Main._ready() completado\n")
+
+
+# ============================================================================
+# FUNCIÓN DE DEBUG OPCIONAL (puedes agregarla si quieres guardado/carga rápido)
+# ============================================================================
+
+# Agregar esta función en Main.gd para debug
+func _input(event):
+	# F5 = Guardado rápido
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F5:
+		if not event.is_echo():
+			print("💾 [DEBUG] Guardado rápido (F5)...")
+			SaveSystem.save_game("quicksave")
+			create_success_effect(get_global_mouse_position(), "¡Guardado!")
+	
+	# F9 = Carga rápida
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F9:
+		if not event.is_echo() and SaveSystem.has_save_file("quicksave"):
+			print("📂 [DEBUG] Carga rápida (F9)...")
+			await SaveSystem.load_game("quicksave")
+			create_success_effect(get_global_mouse_position(), "¡Cargado!")
+		elif not event.is_echo():
+			create_error_effect(get_global_mouse_position(), "Sin guardado rápido")
 
 func _unhandled_input(event):
 	# Detectar ESC para pausar
@@ -140,22 +217,22 @@ func _on_expand_land_button_pressed():
 		hide_expansion_indicators()
 		print("❌ Modo expansión desactivado.")
 
-# CORRECCIÓN: Función create_instruction_popup arreglada
 func create_instruction_popup(message: String, color: Color):
-	var popup_label = Label.new()
-	popup_label.text = message
-	popup_label.add_theme_font_size_override("font_size", 18)
-	popup_label.add_theme_color_override("font_color", color)
-	popup_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	popup_label.position = Vector2(get_viewport().size.x / 2 - 500, 100)
-	popup_label.size = Vector2(400, 50)
+	var popup = instruction_popup_scene.instantiate()
 	
-	get_tree().current_scene.add_child(popup_label)
+	# Configurar posición centrada
+	popup.anchor_left = 0.5
+	popup.anchor_right = 0.5
+	popup.anchor_top = 0.0
+	popup.anchor_bottom = 0.0
+	popup.offset_left = -200
+	popup.offset_right = 200
+	popup.offset_top = 100
+	popup.offset_bottom = 150
+	popup.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	
-	var tween = create_tween()
-	tween.tween_interval(3.0)  # Reemplaza el await con tween_interval
-	tween.tween_property(popup_label, "modulate:a", 0.0, 1.0)
-	tween.tween_callback(popup_label.queue_free)
+	ui_layer.add_child(popup)
+	popup.setup(message, color, 3.0)
 
 func show_expansion_indicators():
 	hide_expansion_indicators()  # Limpiar indicadores anteriores

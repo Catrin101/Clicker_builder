@@ -6,6 +6,15 @@
 
 [node name="Tavern" instance=ExtResource("1_house")]
 script = ExtResource("1_0tao5")
+building_name = "Tavern"
+scene_path = "res://escenas/Estructuras/Tavern.tscn"
+cost = 250
+points_per_second = 2.0
+description = "Un animado punto de encuentro para los aldeanos. Aumenta su felicidad y productividad."
+synergies = {
+"Chapel": -10,
+"Inn": 10
+}
 
 [node name="Sprite2D" parent="." index="0"]
 position = Vector2(0, -19)

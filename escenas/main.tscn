@@ -1,12 +1,18 @@
-[gd_scene load_steps=16 format=3 uid="uid://vsmgd0bgc1uv"]
+[gd_scene load_steps=27 format=3 uid="uid://vsmgd0bgc1uv"]
 
 [ext_resource type="Script" uid="uid://cmmhxy0kw10fr" path="res://scripts/Main.gd" id="1_jumxm"]
 [ext_resource type="Script" uid="uid://cciqx3hwclx6s" path="res://scripts/GridManager.gd" id="2_26pgj"]
+[ext_resource type="AudioStream" uid="uid://kss3f2buacap" path="res://audios/Music.ogg" id="2_f1j2c"]
+[ext_resource type="PackedScene" uid="uid://cl07lm404rm7a" path="res://escenas/FondaMain.tscn" id="2_ymkly"]
+[ext_resource type="PackedScene" uid="uid://ddiw37dkhe3rm" path="res://escenas/clouds_layer.tscn" id="3_jwie6"]
 [ext_resource type="Script" uid="uid://bk8icf1ugsjc5" path="res://scripts/StatsPanel.gd" id="4_26pgj"]
 [ext_resource type="Script" uid="uid://00gckuotu12e" path="res://scripts/StoreUI.gd" id="4_store"]
 [ext_resource type="Script" uid="uid://c47kivwuqvltm" path="res://scripts/WelcomePanel.gd" id="5_acisx"]
 [ext_resource type="Texture2D" uid="uid://bljj0t7q8017l" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barBlue_horizontalLeft.png" id="5_dg7ii"]
+[ext_resource type="AudioStream" uid="uid://cvv4xl7wqlhul" path="res://audios/womp.ogg" id="5_r01y2"]
+[ext_resource type="AudioStream" uid="uid://cjdoc8wsa0c6t" path="res://audios/badadadink.ogg" id="6_88j14"]
 [ext_resource type="Script" uid="uid://mrv5stskllo0" path="res://scripts/CompletionPanel.gd" id="6_a5wrc"]
+[ext_resource type="Script" uid="uid://hcfpubg7d76x" path="res://scripts/ButtonSFX.gd" id="6_rd5dn"]
 [ext_resource type="Texture2D" uid="uid://bodj7n2ct51p2" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barBlue_horizontalRight.png" id="6_woaio"]
 [ext_resource type="Texture2D" uid="uid://bp2ewphj3ap3p" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barBlue_horizontalBlue.png" id="7_7an46"]
 [ext_resource type="Script" uid="uid://did3t3ski72bs" path="res://scripts/ProgressIndicator.gd" id="7_ueiap"]
@@ -15,12 +21,55 @@
 [ext_resource type="Texture2D" uid="uid://btdi1ef7mhnfo" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/barRed_horizontalRight.png" id="10_ueiap"]
 [ext_resource type="PackedScene" uid="uid://bs1brnamwrxm5" path="res://escenas/PauseMenu.tscn" id="14_a5wrc"]
 [ext_resource type="Script" uid="uid://ddywngglkk7m6" path="res://scripts/CameraController.gd" id="15_ueiap"]
+[ext_resource type="AudioStream" uid="uid://c3jdgshqk10dk" path="res://audios/whamp.ogg" id="17_rd5dn"]
+[ext_resource type="Texture2D" uid="uid://ck7bh15txf6cx" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/panelInset_beigeLight.png" id="21_3c8yq"]
+[ext_resource type="PackedScene" uid="uid://bvga1qkm61jg7" path="res://escenas/OptionsMenu.tscn" id="23_hrygr"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hrygr"]
+texture = ExtResource("21_3c8yq")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8qufa"]
+texture = ExtResource("21_3c8yq")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_jumxm")
+metadata/_edit_horizontal_guides_ = [-2000.0, 2000.0]
+metadata/_edit_vertical_guides_ = [-2000.0, 2000.0]
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_f1j2c")
+autoplay = true
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+scroll_limit_begin = Vector2(-2000, -2000)
+scroll_limit_end = Vector2(2000, 2000)
+
+[node name="Mapa" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.5, 0.5)
+
+[node name="FondaMain" parent="ParallaxBackground/Mapa" instance=ExtResource("2_ymkly")]
+
+[node name="CloudsLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.7, 0.7)
+
+[node name="CloudsLayer" parent="ParallaxBackground/CloudsLayer" instance=ExtResource("3_jwie6")]
 
 [node name="GridManager" type="Node2D" parent="."]
 script = ExtResource("2_26pgj")
+
+[node name="TerrainPlaceSound" type="AudioStreamPlayer" parent="GridManager"]
+stream = ExtResource("17_rd5dn")
+
+[node name="BuildingPlaceSound" type="AudioStreamPlayer" parent="GridManager"]
+stream = ExtResource("6_88j14")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -31,8 +80,8 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -352.0
-offset_top = -108.0
-offset_right = -30.0
+offset_top = -109.0
+offset_right = -74.0
 offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -48,9 +97,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 53.0
-offset_top = -108.0
-offset_right = 424.0
+offset_left = -37.0
+offset_top = -109.0
+offset_right = 334.0
 offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -59,28 +108,36 @@ text = "Expandir Terreno"
 metadata/_edit_group_ = true
 
 [node name="CancelPlacementButton" type="Button" parent="UI"]
-visible = false
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 140.0
-offset_right = 328.0
-offset_bottom = 59.0
-grow_horizontal = 2
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -188.0
+offset_top = -59.0
+grow_horizontal = 0
+grow_vertical = 0
 theme_override_font_sizes/font_size = 28
 text = "Cancelar"
 metadata/_edit_group_ = true
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/CancelPlacementButton"]
+stream = ExtResource("5_r01y2")
+script = ExtResource("6_rd5dn")
+
 [node name="StorePanel" type="Panel" parent="UI"]
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_right = 326.0
+offset_right = 393.0
 grow_vertical = 2
 
 [node name="StoreScrollContainer" type="ScrollContainer" parent="UI/StorePanel"]
-layout_mode = 0
-offset_right = 325.0
-offset_bottom = 902.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 horizontal_scroll_mode = 0
 
 [node name="StoreUI" type="VBoxContainer" parent="UI/StorePanel/StoreScrollContainer"]
@@ -103,8 +160,8 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="StatsPanel" type="Panel" parent="UI"]
-offset_left = 326.0
-offset_right = 608.0
+offset_left = 393.0
+offset_right = 675.0
 offset_bottom = 199.0
 script = ExtResource("4_26pgj")
 
@@ -271,106 +328,6 @@ texture_under = ExtResource("8_acisx")
 texture_over = ExtResource("9_a5wrc")
 texture_progress = ExtResource("10_ueiap")
 
-[node name="SaveLoadTestPanel" type="Panel" parent="UI"]
-visible = false
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -237.0
-grow_horizontal = 0
-grow_vertical = 0
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/SaveLoadTestPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="SaveLoadContainer" type="VBoxContainer" parent="UI/SaveLoadTestPanel/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="TestTitle" type="Label" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "🧪 PRUEBAS DE GUARDADO"
-
-[node name="HSeparator" type="HSeparator" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
-layout_mode = 2
-
-[node name="Slot1Container" type="HBoxContainer" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="Slot1Label" type="Label" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot1Container"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "📁 Slot 1"
-
-[node name="SaveSlot1Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot1Container"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "💾"
-
-[node name="LoadSlot1Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot1Container"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "📂"
-
-[node name="HSeparator2" type="HSeparator" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
-layout_mode = 2
-
-[node name="Slot2Container" type="HBoxContainer" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="Slot2Label" type="Label" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot2Container"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "📁 Slot 2"
-
-[node name="SaveSlot2Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot2Container"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "💾"
-
-[node name="LoadSlot2Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot2Container"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "📂"
-
-[node name="HSeparator3" type="HSeparator" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
-layout_mode = 2
-
-[node name="Slot3Container" type="HBoxContainer" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="Slot3Label" type="Label" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot3Container"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "📁 Slot 3"
-
-[node name="SaveSlot3Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot3Container"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "💾"
-
-[node name="LoadSlot3Button" type="Button" parent="UI/SaveLoadTestPanel/MarginContainer/SaveLoadContainer/Slot3Container"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "📂"
-
 [node name="WelcomeOverlay" type="ColorRect" parent="UI"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -387,10 +344,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -219.0
-offset_top = -287.0
-offset_right = 219.0
-offset_bottom = 287.0
+offset_left = -250.0
+offset_top = -370.0
+offset_right = 250.0
+offset_bottom = 312.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -439,6 +396,12 @@ text = "[center]¡Bienvenido, Constructor![/center]
     • Planifica bien tu ciudad: ¡las sinergias son clave!
     • Expande tu terreno estratégicamente
     
+	[b] Controles básicos:[/b]
+	• Pausas con Esc o con el botón arriba a la derecha
+	• Desplazas la cámara con el mouse + clic Derecho o 
+	{A,W,S,D}, flechas {Ariba, abajo, izquierda, derecha}
+	• Haces zoom con la rueda del ratón o {N, M}
+
     [center][wave]¡Buena suerte, Constructor![/wave][/center]"
 fit_content = true
 
@@ -451,6 +414,10 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "🚀 ¡COMENZAR MI CIUDAD!"
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/WelcomeOverlay/WelcomePanel/WelcomeMargin/WelcomeContainer/StartGameButton"]
+stream = ExtResource("17_rd5dn")
+script = ExtResource("6_rd5dn")
+
 [node name="CompletionOverlay" type="ColorRect" parent="UI"]
 visible = false
 anchors_preset = 15
@@ -462,7 +429,7 @@ color = Color(0, 0, 0, 0.203922)
 script = ExtResource("6_a5wrc")
 
 [node name="CompletionPanel" type="Panel" parent="UI/CompletionOverlay"]
-custom_minimum_size = Vector2(700, 600)
+custom_minimum_size = Vector2(1000, 600)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -475,43 +442,63 @@ offset_right = 350.0
 offset_bottom = 318.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(-500, 500)
 
-[node name="CompletionMargin" type="MarginContainer" parent="UI/CompletionOverlay/CompletionPanel"]
+[node name="CompletionMargin" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 13.0
+offset_top = 13.0
+offset_right = -13.0
+offset_bottom = -13.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="LeftPanel" type="Panel" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_hrygr")
+
+[node name="LeftMargin" type="MarginContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="CompletionContainer" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin"]
+[node name="CompletionContainer" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="CompletionTitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="CompletionTitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "🎉 ¡FELICIDADES! 🎉"
 
-[node name="CompletionSubtitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="CompletionSubtitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0.5, 1, 0.5, 1)
 theme_override_font_sizes/font_size = 20
 text = "¡Has Completado Tu Ciudad!"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 
-[node name="CompletionMessage" type="RichTextLabel" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="CompletionMessage" type="RichTextLabel" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.281187, 0.281187, 0.281187, 1)
 theme_override_font_sizes/normal_font_size = 14
 bbcode_enabled = true
 text = "[center]¡Increíble trabajo, Constructor Maestro![/center]
@@ -529,61 +516,94 @@ text = "[center]¡Increíble trabajo, Constructor Maestro![/center]
     [center][rainbow]¡Gracias por jugar![/rainbow][/center]"
 fit_content = true
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 
-[node name="CompletionStatsContainer" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="CompletionStatsTitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionStatsContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "📊 ESTADÍSTICAS FINALES:"
-
-[node name="CompletionStatsList" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
-layout_mode = 2
-theme_override_constants/separation = 3
-
-[node name="HSeparator" type="HSeparator" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
-layout_mode = 2
-
-[node name="CompletionButtonsContainer" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="CompletionButtonsContainer" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 20
 
-[node name="ContinuePlayingButton" type="Button" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionButtonsContainer"]
+[node name="ContinuePlayingButton" type="Button" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionButtonsContainer"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "▶️ Seguir Jugando"
 
-[node name="CloseCompletionButton" type="Button" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionButtonsContainer"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionButtonsContainer/ContinuePlayingButton"]
+stream = ExtResource("17_rd5dn")
+script = ExtResource("6_rd5dn")
+
+[node name="CloseCompletionButton" type="Button" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionButtonsContainer"]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "✅ Cerrar"
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionButtonsContainer/CloseCompletionButton"]
+stream = ExtResource("5_r01y2")
+script = ExtResource("6_rd5dn")
+
+[node name="RightPanel" type="Panel" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin"]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_8qufa")
+
+[node name="RightMargin" type="MarginContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="StatsScrollContainer" type="ScrollContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel/RightMargin"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="StatsContent" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel/RightMargin/StatsScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="StatsTitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel/RightMargin/StatsScrollContainer/StatsContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "📊 ESTADÍSTICAS FINALES"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel/RightMargin/StatsScrollContainer/StatsContent"]
+layout_mode = 2
+
+[node name="CompletionStatsList" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel/RightMargin/StatsScrollContainer/StatsContent"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
 [node name="PauseMenu" parent="UI" instance=ExtResource("14_a5wrc")]
 
 [node name="PauseButton" type="Button" parent="UI"]
-anchors_preset = 3
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -103.0
-offset_top = -48.0
-offset_right = -5.0
-offset_bottom = -5.0
+offset_left = -98.0
+offset_bottom = 43.0
 grow_horizontal = 0
-grow_vertical = 0
 theme_override_font_sizes/font_size = 16
 text = "⏸️ PAUSA"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/PauseButton"]
+stream = ExtResource("5_r01y2")
+script = ExtResource("6_rd5dn")
+
+[node name="OptionsMenu" parent="UI" instance=ExtResource("23_hrygr")]
+visible = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("15_ueiap")

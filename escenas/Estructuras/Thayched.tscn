@@ -6,6 +6,16 @@
 
 [node name="Thayched" instance=ExtResource("1_eko6q")]
 script = ExtResource("2_eko6q")
+building_name = "Thayched"
+scene_path = "res://escenas/Estructuras/Thayched.tscn"
+cost = 30
+points_per_second = 0.25
+description = "Una vivienda rústica y primitiva. Aunque es más económica, su construcción es menos eficiente para el crecimiento de la población."
+synergies = {
+"Castle": -20,
+"House": 2,
+"Villa": -20
+}
 
 [node name="Sprite2D" parent="." index="0"]
 scale = Vector2(0.5625, 0.596774)

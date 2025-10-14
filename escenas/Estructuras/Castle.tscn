@@ -6,6 +6,16 @@
 
 [node name="Castle" instance=ExtResource("1_house")]
 script = ExtResource("2_ugmsh")
+building_name = "Castle"
+scene_path = "res://escenas/Estructuras/Castle.tscn"
+cost = 2000
+points_per_second = 5.0
+description = "El corazón de tu reino. Esta fortaleza no solo protege a tu pueblo, sino que también sirve como el centro de mando."
+synergies = {
+"Clock": 15,
+"Inn": -10,
+"Tavern": -10
+}
 
 [node name="Sprite2D" parent="." index="0"]
 position = Vector2(0, -25)

@@ -6,6 +6,16 @@
 
 [node name="House" instance=ExtResource("1_house")]
 script = ExtResource("3_house")
+building_name = "House"
+scene_path = "res://escenas/Estructuras/House.tscn"
+cost = 50
+points_per_second = 0.5
+description = "Un hogar modesto para tus aldeanos. Es la base de todo asentamiento."
+synergies = {
+"Castle": -5,
+"Chapel": 5,
+"Tavern": 5
+}
 
 [node name="Sprite2D" parent="." index="0"]
 scale = Vector2(0.5625, 0.596774)
