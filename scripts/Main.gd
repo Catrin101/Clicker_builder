@@ -13,6 +13,7 @@ extends Node2D
 # Referencia al menú de pausa
 @onready var pause_menu: Control = $UI/PauseMenu
 @onready var pause_button: Button = $UI/PauseButton
+@onready var options_menu: Control = $UI/OptionsMenu
 
 # Referencias para InstructionPopup
 @export var instruction_popup_scene: PackedScene = preload("res://escenas/InstructionPopup.tscn")
@@ -30,6 +31,10 @@ var points_timer: Timer
 # Variables para estadísticas
 var buildings_built: int = 0
 var total_spent: int = 0
+
+# ============================================================================
+# AGREGAR ESTO AL FINAL DE LA FUNCIÓN _ready() EN Main.gd
+# ============================================================================
 
 func _ready():
 	# Crear y configurar el timer para puntos automáticos
@@ -55,13 +60,13 @@ func _ready():
 	
 	# Conectar el botón de cancelación
 	cancel_placement_button.pressed.connect(_on_cancel_placement_pressed)
-	cancel_placement_button.visible = false  # Inicialmente oculto
+	cancel_placement_button.visible = false
 	
 	# Conectar botón de pausa
 	if pause_button:
 		pause_button.pressed.connect(_on_pause_button_pressed)
-	# Actualizar UI inicial
 	
+	# Actualizar UI inicial
 	_update_ui()
 	
 	# Asegurar que la música haga loop
@@ -70,12 +75,73 @@ func _ready():
 			music_player.stream.loop = true
 		elif music_player.stream is AudioStreamWAV:
 			music_player.stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
-			
+	
 	# Verificar que el PauseMenu existe
 	if pause_menu:
 		print("PauseMenu encontrado y listo")
 	else:
 		printerr("ERROR: No se encontró PauseMenu en UI")
+	
+	# ============================================================================
+	# 🔥 CRÍTICO: DETECTAR CARGA DE PARTIDA PENDIENTE
+	# ============================================================================
+	# Esperar frames adicionales para asegurar que todo esté inicializado
+	await get_tree().process_frame
+	await get_tree().process_frame
+	
+	print("\n🔍 VERIFICANDO CARGA PENDIENTE...")
+	print("   SaveSystem existe: ", SaveSystem != null)
+	print("   pending_load_data existe: ", SaveSystem.pending_load_data != null)
+	
+	# Verificar si hay datos pendientes de carga
+	if SaveSystem and is_instance_valid(SaveSystem.pending_load_data):
+		print("🔄 ¡CARGA PENDIENTE DETECTADA!")
+		print("   Puntos a cargar: ", SaveSystem.pending_load_data.player_points)
+		
+		# Copiar referencia local ANTES de limpiar
+		var load_data = SaveSystem.pending_load_data
+		
+		# Limpiar la variable global INMEDIATAMENTE
+		SaveSystem.pending_load_data = null
+		
+		# Verificar que los datos son válidos
+		if is_instance_valid(load_data):
+			print("✅ Datos válidos, iniciando aplicación...")
+			await SaveSystem.apply_save_data(load_data)
+			print("✅ Datos aplicados exitosamente desde Main._ready()")
+			
+			# Emitir señal de carga completada
+			SaveSystem.load_completed.emit(true, "slot_1")
+		else:
+			printerr("❌ Error: load_data local no es válido")
+			SaveSystem.load_completed.emit(false, "slot_1")
+	else:
+		print("ℹ️ No hay datos de carga pendientes (inicio normal)")
+	
+	print("✅ Main._ready() completado\n")
+
+
+# ============================================================================
+# FUNCIÓN DE DEBUG OPCIONAL (puedes agregarla si quieres guardado/carga rápido)
+# ============================================================================
+
+# Agregar esta función en Main.gd para debug
+func _input(event):
+	# F5 = Guardado rápido
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F5:
+		if not event.is_echo():
+			print("💾 [DEBUG] Guardado rápido (F5)...")
+			SaveSystem.save_game("quicksave")
+			create_success_effect(get_global_mouse_position(), "¡Guardado!")
+	
+	# F9 = Carga rápida
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F9:
+		if not event.is_echo() and SaveSystem.has_save_file("quicksave"):
+			print("📂 [DEBUG] Carga rápida (F9)...")
+			await SaveSystem.load_game("quicksave")
+			create_success_effect(get_global_mouse_position(), "¡Cargado!")
+		elif not event.is_echo():
+			create_error_effect(get_global_mouse_position(), "Sin guardado rápido")
 
 func _unhandled_input(event):
 	# Detectar ESC para pausar

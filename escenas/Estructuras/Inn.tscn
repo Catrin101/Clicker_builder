@@ -6,6 +6,16 @@
 
 [node name="Inn" instance=ExtResource("1_house")]
 script = ExtResource("2_dsam0")
+building_name = "Inn"
+scene_path = "res://escenas/Estructuras/Inn.tscn"
+cost = 400
+points_per_second = 3.5
+description = "Más que un simple bar, la posada ofrece un lugar para descansar a los viajeros cansados."
+synergies = {
+"Castle": -5,
+"Tavern": 10,
+"Villa": 10
+}
 
 [node name="Sprite2D" parent="." index="0"]
 position = Vector2(0, -19)

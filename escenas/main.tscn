@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://vsmgd0bgc1uv"]
+[gd_scene load_steps=27 format=3 uid="uid://vsmgd0bgc1uv"]
 
 [ext_resource type="Script" uid="uid://cmmhxy0kw10fr" path="res://scripts/Main.gd" id="1_jumxm"]
 [ext_resource type="Script" uid="uid://cciqx3hwclx6s" path="res://scripts/GridManager.gd" id="2_26pgj"]
@@ -22,6 +22,22 @@
 [ext_resource type="PackedScene" uid="uid://bs1brnamwrxm5" path="res://escenas/PauseMenu.tscn" id="14_a5wrc"]
 [ext_resource type="Script" uid="uid://ddywngglkk7m6" path="res://scripts/CameraController.gd" id="15_ueiap"]
 [ext_resource type="AudioStream" uid="uid://c3jdgshqk10dk" path="res://audios/whamp.ogg" id="17_rd5dn"]
+[ext_resource type="Texture2D" uid="uid://ck7bh15txf6cx" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/panelInset_beigeLight.png" id="21_3c8yq"]
+[ext_resource type="PackedScene" uid="uid://bvga1qkm61jg7" path="res://escenas/OptionsMenu.tscn" id="23_hrygr"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hrygr"]
+texture = ExtResource("21_3c8yq")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8qufa"]
+texture = ExtResource("21_3c8yq")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_jumxm")
@@ -64,8 +80,8 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -352.0
-offset_top = -108.0
-offset_right = -30.0
+offset_top = -109.0
+offset_right = -74.0
 offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -81,9 +97,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 53.0
-offset_top = -108.0
-offset_right = 424.0
+offset_left = -37.0
+offset_top = -109.0
+offset_right = 334.0
 offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -112,13 +128,16 @@ script = ExtResource("6_rd5dn")
 [node name="StorePanel" type="Panel" parent="UI"]
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_right = 326.0
+offset_right = 393.0
 grow_vertical = 2
 
 [node name="StoreScrollContainer" type="ScrollContainer" parent="UI/StorePanel"]
-layout_mode = 0
-offset_right = 325.0
-offset_bottom = 902.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 horizontal_scroll_mode = 0
 
 [node name="StoreUI" type="VBoxContainer" parent="UI/StorePanel/StoreScrollContainer"]
@@ -141,8 +160,8 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="StatsPanel" type="Panel" parent="UI"]
-offset_left = 326.0
-offset_right = 608.0
+offset_left = 393.0
+offset_right = 675.0
 offset_bottom = 199.0
 script = ExtResource("4_26pgj")
 
@@ -325,9 +344,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -219.0
+offset_left = -250.0
 offset_top = -370.0
-offset_right = 219.0
+offset_right = 250.0
 offset_bottom = 312.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -410,7 +429,7 @@ color = Color(0, 0, 0, 0.203922)
 script = ExtResource("6_a5wrc")
 
 [node name="CompletionPanel" type="Panel" parent="UI/CompletionOverlay"]
-custom_minimum_size = Vector2(700, 600)
+custom_minimum_size = Vector2(1000, 600)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -423,43 +442,63 @@ offset_right = 350.0
 offset_bottom = 318.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(-500, 500)
 
-[node name="CompletionMargin" type="MarginContainer" parent="UI/CompletionOverlay/CompletionPanel"]
+[node name="CompletionMargin" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 13.0
+offset_top = 13.0
+offset_right = -13.0
+offset_bottom = -13.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="LeftPanel" type="Panel" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_hrygr")
+
+[node name="LeftMargin" type="MarginContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 30
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="CompletionContainer" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin"]
+[node name="CompletionContainer" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="CompletionTitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="CompletionTitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "🎉 ¡FELICIDADES! 🎉"
 
-[node name="CompletionSubtitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="CompletionSubtitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0.5, 1, 0.5, 1)
 theme_override_font_sizes/font_size = 20
 text = "¡Has Completado Tu Ciudad!"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 
-[node name="CompletionMessage" type="RichTextLabel" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="CompletionMessage" type="RichTextLabel" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.281187, 0.281187, 0.281187, 1)
 theme_override_font_sizes/normal_font_size = 14
 bbcode_enabled = true
 text = "[center]¡Increíble trabajo, Constructor Maestro![/center]
@@ -477,52 +516,75 @@ text = "[center]¡Increíble trabajo, Constructor Maestro![/center]
     [center][rainbow]¡Gracias por jugar![/rainbow][/center]"
 fit_content = true
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 
-[node name="CompletionStatsContainer" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="CompletionStatsTitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionStatsContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "📊 ESTADÍSTICAS FINALES:"
-
-[node name="CompletionStatsList" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
-layout_mode = 2
-theme_override_constants/separation = 3
-
-[node name="HSeparator" type="HSeparator" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
-layout_mode = 2
-
-[node name="CompletionButtonsContainer" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer"]
+[node name="CompletionButtonsContainer" type="HBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 20
 
-[node name="ContinuePlayingButton" type="Button" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionButtonsContainer"]
+[node name="ContinuePlayingButton" type="Button" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionButtonsContainer"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "▶️ Seguir Jugando"
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionButtonsContainer/ContinuePlayingButton"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionButtonsContainer/ContinuePlayingButton"]
 stream = ExtResource("17_rd5dn")
 script = ExtResource("6_rd5dn")
 
-[node name="CloseCompletionButton" type="Button" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionButtonsContainer"]
+[node name="CloseCompletionButton" type="Button" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionButtonsContainer"]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "✅ Cerrar"
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/CompletionContainer/CompletionButtonsContainer/CloseCompletionButton"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionButtonsContainer/CloseCompletionButton"]
 stream = ExtResource("5_r01y2")
 script = ExtResource("6_rd5dn")
+
+[node name="RightPanel" type="Panel" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin"]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_8qufa")
+
+[node name="RightMargin" type="MarginContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="StatsScrollContainer" type="ScrollContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel/RightMargin"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="StatsContent" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel/RightMargin/StatsScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="StatsTitle" type="Label" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel/RightMargin/StatsScrollContainer/StatsContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "📊 ESTADÍSTICAS FINALES"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel/RightMargin/StatsScrollContainer/StatsContent"]
+layout_mode = 2
+
+[node name="CompletionStatsList" type="VBoxContainer" parent="UI/CompletionOverlay/CompletionPanel/CompletionMargin/RightPanel/RightMargin/StatsScrollContainer/StatsContent"]
+layout_mode = 2
+theme_override_constants/separation = 5
 
 [node name="PauseMenu" parent="UI" instance=ExtResource("14_a5wrc")]
 
@@ -539,6 +601,9 @@ text = "⏸️ PAUSA"
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/PauseButton"]
 stream = ExtResource("5_r01y2")
 script = ExtResource("6_rd5dn")
+
+[node name="OptionsMenu" parent="UI" instance=ExtResource("23_hrygr")]
+visible = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("15_ueiap")

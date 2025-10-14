@@ -6,6 +6,17 @@
 
 [node name="Villa" instance=ExtResource("1_3cp20")]
 script = ExtResource("2_3cp20")
+building_name = "Villa"
+scene_path = "res://escenas/Estructuras/Villa.tscn"
+cost = 3000
+points_per_second = 6.0
+description = "Una residencia opulenta para los más ricos de la sociedad. La villa atrae a comerciantes influyentes y eleva el prestigio de tu pueblo."
+synergies = {
+"Castle": 10,
+"Inn": 10,
+"Tavern": -15,
+"Thayched": -15
+}
 
 [node name="Sprite2D" parent="." index="0"]
 scale = Vector2(0.5625, 0.596774)

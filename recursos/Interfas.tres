@@ -1,7 +1,9 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://d2asa51h3f7ie"]
+[gd_resource type="Theme" load_steps=12 format=3 uid="uid://d2asa51h3f7ie"]
 
+[ext_resource type="FontFile" uid="uid://bjsve5ydc5pki" path="res://recursos/TT Octosquares Trial Bold.ttf" id="1_2nwro"]
 [ext_resource type="Texture2D" uid="uid://dmjy6wb773n8h" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/buttonLong_beige.png" id="1_i5l5v"]
 [ext_resource type="Texture2D" uid="uid://ci4dhu81i7ce8" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/panel_brown.png" id="2_abgkg"]
+[ext_resource type="Texture2D" uid="uid://bkce5g4u285i8" path="res://sprites/ui/kenney_ui-pack-rpg-expansion/panelInset_beige.png" id="3_abgkg"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2nwro"]
 texture = ExtResource("1_i5l5v")
@@ -46,12 +48,24 @@ texture_margin_top = 10.0
 texture_margin_right = 10.0
 texture_margin_bottom = 10.0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tngb3"]
+texture = ExtResource("3_abgkg")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
 [resource]
 Button/font_sizes/font_size = 40
+Button/fonts/font = ExtResource("1_2nwro")
 Button/styles/disabled = SubResource("StyleBoxTexture_2nwro")
 Button/styles/focus = SubResource("StyleBoxTexture_6b2ql")
 Button/styles/hover = SubResource("StyleBoxTexture_1qmue")
 Button/styles/normal = SubResource("StyleBoxTexture_fayuv")
 Button/styles/pressed = SubResource("StyleBoxTexture_6byam")
 Label/font_sizes/font_size = 20
+Label/fonts/font = ExtResource("1_2nwro")
 Panel/styles/panel = SubResource("StyleBoxTexture_pucv4")
+Panel/styles/variante = SubResource("StyleBoxTexture_tngb3")
+RichTextLabel/fonts/bold_font = ExtResource("1_2nwro")
+RichTextLabel/fonts/normal_font = ExtResource("1_2nwro")

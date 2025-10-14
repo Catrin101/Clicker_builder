@@ -98,10 +98,21 @@ text = "📂 Cargar Partida"
 stream = ExtResource("2_46crp")
 script = ExtResource("3_kilm7")
 
+[node name="OptionsButton" type="Button" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "⚙️ Opciones"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer/OptionsButton"]
+stream = ExtResource("2_46crp")
+script = ExtResource("3_kilm7")
+
 [node name="HSeparator" type="HSeparator" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
 layout_mode = 2
 
 [node name="ReturnMenuButton" type="Button" parent="PausePanel/PauseMargin/PauseContainer/ButtonsContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
@@ -124,6 +135,6 @@ script = ExtResource("3_kilm7")
 [node name="InfoLabel" type="Label" parent="PausePanel/PauseMargin/PauseContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0.501961, 0.501961, 0.501961, 1)
-theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.683078, 0.683077, 0.683077, 1)
+theme_override_font_sizes/font_size = 16
 text = "Presiona ESC para pausar/continuar"

@@ -11,6 +11,7 @@ size = Vector2(128, 128)
 script = ExtResource("1_ovm1t")
 
 [node name="tierraContainer" type="Node2D" parent="."]
+z_index = -10
 
 [node name="Sprite2D4" type="Sprite2D" parent="tierraContainer"]
 position = Vector2(0, 84)

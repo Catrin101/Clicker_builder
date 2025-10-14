@@ -224,3 +224,119 @@ func get_grid_stats() -> Dictionary:
 				stats.building_types[building_name] = 1
 	
 	return stats
+
+# Añade estas dos funciones al final de tu GridManager.gd
+
+# Empaqueta el estado actual de la cuadrícula en un recurso GridData
+func get_data_as_resource() -> GridData:
+	var data = GridData.new()
+	data.land_cost = self.land_cost
+	
+	# Guardar celdas de terreno (solo sus coordenadas)
+	for cell_key in grid_cells:
+		var coords = cell_key.split(",")
+		data.cells.append(Vector2i(int(coords[0]), int(coords[1])))
+
+	# Guardar edificios
+	var buildings_array = get_all_buildings()
+	for building in buildings_array:
+		var b_data = BuildingData.new()
+		b_data.scene_path = building.scene_path
+		b_data.grid_x = building.grid_x
+		b_data.grid_y = building.grid_y
+		data.buildings.append(b_data)
+	
+	return data
+
+# Carga el estado de la cuadrícula desde un recurso GridData
+func load_data_from_resource(data: GridData):
+	print("\n=== CARGANDO DATOS DE CUADRÍCULA ===")
+	
+	# Limpiamos la cuadrícula actual, PERO preservando los AudioStreamPlayer
+	var children_to_remove = []
+	for child in get_children():
+		# ✅ NO eliminar los AudioStreamPlayer
+		if not child is AudioStreamPlayer:
+			children_to_remove.append(child)
+	
+	print("Eliminando ", children_to_remove.size(), " nodos de la cuadrícula...")
+	for child in children_to_remove:
+		if is_instance_valid(child):
+			child.queue_free()
+	
+	await get_tree().process_frame # Esperar a que se eliminen
+	grid_cells.clear()
+	
+	# Verificar que los sonidos siguen disponibles
+	if terrain_place_sound:
+		print("✅ TerrainPlaceSound preservado")
+	else:
+		printerr("⚠️ TerrainPlaceSound perdido")
+	
+	if building_place_sound:
+		print("✅ BuildingPlaceSound preservado")
+	else:
+		printerr("⚠️ BuildingPlaceSound perdido")
+	
+	# Restaurar datos
+	self.land_cost = data.land_cost
+	print("Land cost restaurado: ", land_cost)
+	
+	# Recrear terreno
+	var terrain_scene = preload("res://escenas/terrain.tscn")
+	print("Recreando ", data.cells.size(), " celdas de terreno...")
+	for cell_coords in data.cells:
+		var terrain_instance = terrain_scene.instantiate()
+		terrain_instance.position = grid_to_world(cell_coords)
+		terrain_instance.grid_x = cell_coords.x
+		terrain_instance.grid_y = cell_coords.y
+		add_child(terrain_instance)
+		grid_cells[str(cell_coords.x) + "," + str(cell_coords.y)] = terrain_instance
+	
+	await get_tree().process_frame # Esperar a que el terreno esté listo
+	print("✅ Terreno recreado")
+
+	# Recrear edificios
+	print("Recreando ", data.buildings.size(), " edificios...")
+	for building_data in data.buildings:
+		var building_scene = load(building_data.scene_path)
+		if not building_scene:
+			printerr("⚠️ No se pudo cargar edificio: ", building_data.scene_path)
+			continue
+		
+		var building_instance = building_scene.instantiate()
+		building_instance.position = grid_to_world(Vector2i(building_data.grid_x, building_data.grid_y))
+		
+		# IMPORTANTE: Llamamos a on_placed_in_grid con is_loading = true
+		if building_instance.has_method("on_placed_in_grid"):
+			building_instance.on_placed_in_grid(building_data.grid_x, building_data.grid_y, true)
+		else:
+			building_instance.grid_x = building_data.grid_x
+			building_instance.grid_y = building_data.grid_y
+		
+		add_child(building_instance)
+		
+		# Marcar terreno como ocupado
+		var key = str(building_data.grid_x) + "," + str(building_data.grid_y)
+		if grid_cells.has(key):
+			var terrain = grid_cells[key]
+			terrain.has_building = true
+			terrain.building_node = building_instance
+			print("  ✅ Edificio ", building_instance.building_name, " en (", building_data.grid_x, ", ", building_data.grid_y, ")")
+	
+	await get_tree().process_frame # Esperar a que los edificios estén listos
+	print("✅ Edificios recreados")
+
+	# Recalcular sinergias y PPS al final
+	print("Recalculando sinergias...")
+	var all_buildings = get_all_buildings()
+	for building in all_buildings:
+		if building.has_method("calculate_synergies"):
+			building.calculate_synergies()
+	
+	await get_tree().process_frame
+	
+	print("Recalculando PPS total...")
+	GameManager.recalculate_total_points_per_second()
+	
+	print("=== CARGA DE CUADRÍCULA COMPLETADA ===\n")
