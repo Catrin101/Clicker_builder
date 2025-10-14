@@ -12,7 +12,6 @@ func _ready():
 	# Configurar las sinergias específicas del castillo
 	synergies = {
 		"Clock": 15,      # +15% con Torre del Reloj
-		"Tavern": -10,    # -10% con Taberna
 		"Inn": -10        # -10% con Posada
 	}
 	

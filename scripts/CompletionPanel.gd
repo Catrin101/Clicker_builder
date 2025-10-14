@@ -1,18 +1,19 @@
 # CompletionPanel.gd - Panel de felicitación con dos columnas
 extends ColorRect
 
-# Referencias a nodos del panel izquierdo
-@onready var left_panel: Panel = $CompletionPanel/HBoxContainer/LeftPanel
-@onready var completion_message: RichTextLabel = $CompletionPanel/HBoxContainer/LeftPanel/LeftMargin/CompletionContainer/CompletionMessage
+# Referencias a nodos - RUTAS CORREGIDAS según main.tscn
+@onready var completion_panel: Panel = $CompletionPanel
+@onready var completion_margin: HBoxContainer = $CompletionPanel/CompletionMargin
+
+# Panel izquierdo
+@onready var left_panel: Panel = $CompletionPanel/CompletionMargin/LeftPanel
+@onready var completion_message: RichTextLabel = $CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionMessage
 @onready var continue_button: Button = $CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionButtonsContainer/ContinuePlayingButton
 @onready var close_button: Button = $CompletionPanel/CompletionMargin/LeftPanel/LeftMargin/CompletionContainer/CompletionButtonsContainer/CloseCompletionButton
 
-# Referencias a nodos del panel derecho
-@onready var right_panel: Panel = $CompletionPanel/HBoxContainer/RightPanel
-@onready var completion_stats_list: VBoxContainer = $CompletionPanel/HBoxContainer/RightPanel/RightMargin/StatsScrollContainer/StatsContent/CompletionStatsList
-
-# Referencia al panel principal (para animaciones)
-@onready var completion_panel: Panel = $CompletionPanel
+# Panel derecho
+@onready var right_panel: Panel = $CompletionPanel/CompletionMargin/RightPanel
+@onready var completion_stats_list: VBoxContainer = $CompletionPanel/CompletionMargin/RightPanel/RightMargin/StatsScrollContainer/StatsContent/CompletionStatsList
 
 # Variables de animación
 var is_animating: bool = false
@@ -21,26 +22,43 @@ func _ready():
 	# Inicialmente oculto
 	visible = false
 	
+	# Verificar que los nodos existen
+	if not continue_button or not close_button:
+		push_error("CompletionPanel: No se encontraron los botones")
+		return
+	
+	if not completion_stats_list:
+		push_error("CompletionPanel: No se encontró completion_stats_list")
+		return
+	
 	# Conectar botones
 	continue_button.pressed.connect(_on_continue_button_pressed)
 	close_button.pressed.connect(_on_close_button_pressed)
 	
 	# Conectar señal de completado del juego
-	GameCompletionManager.game_completed.connect(_on_game_completed)
+	if GameCompletionManager.has_signal("game_completed"):
+		GameCompletionManager.game_completed.connect(_on_game_completed)
+	else:
+		push_error("GameCompletionManager no tiene la señal game_completed")
 	
-	print("CompletionPanel inicializado con dos paneles")
+	print("CompletionPanel inicializado correctamente")
 
 func _on_game_completed():
 	print("Señal de juego completado recibida")
 	call_deferred("show_completion")
 
 func show_completion():
+	print("Mostrando panel de completado")
+	
 	# Actualizar contenido
 	update_completion_message()
 	update_completion_stats()
 	
 	visible = true
 	is_animating = true
+	
+	# Asegurar que el panel esté al frente
+	get_parent().move_child(self, get_parent().get_child_count() - 1)
 	
 	# Efecto de aparición espectacular
 	modulate = Color(1, 1, 1, 0)
@@ -63,6 +81,9 @@ func show_completion():
 	# Animar paneles izquierdo y derecho con delay
 	left_panel.modulate = Color(1, 1, 1, 0)
 	right_panel.modulate = Color(1, 1, 1, 0)
+	
+	var original_left_pos = left_panel.position.x
+	var original_right_pos = right_panel.position.x
 	left_panel.position.x -= 50
 	right_panel.position.x += 50
 	
@@ -71,11 +92,11 @@ func show_completion():
 	
 	# Panel izquierdo
 	panels_tween.tween_property(left_panel, "modulate", Color.WHITE, 0.4).set_delay(0.2)
-	panels_tween.tween_property(left_panel, "position:x", 0, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).set_delay(0.2)
+	panels_tween.tween_property(left_panel, "position:x", original_left_pos, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).set_delay(0.2)
 	
 	# Panel derecho
 	panels_tween.tween_property(right_panel, "modulate", Color.WHITE, 0.4).set_delay(0.4)
-	panels_tween.tween_property(right_panel, "position:x", 0, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).set_delay(0.4)
+	panels_tween.tween_property(right_panel, "position:x", original_right_pos, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).set_delay(0.4)
 	
 	await panels_tween.finished
 	is_animating = false
@@ -83,6 +104,10 @@ func show_completion():
 	print("Panel de completado mostrado con dos columnas")
 
 func update_completion_message():
+	if not completion_message:
+		push_error("completion_message no existe")
+		return
+	
 	# Obtener información de progreso
 	var buildings_progress = GameCompletionManager.get_buildings_progress()
 	var achievements_progress = GameCompletionManager.get_achievements_progress()
@@ -94,7 +119,6 @@ func update_completion_message():
 	message += "• ✅ Construiste al menos un edificio de cada tipo\n"
 	message += "   [color=cyan](" + str(buildings_progress.completed) + "/" + str(buildings_progress.total) + " tipos completados)[/color]\n\n"
 	
-	# TODO: Descomentar cuando se implemente el sistema de logros
 	message += "• [color=gray]⏳ Sistema de logros (próximamente)[/color]\n\n"
 	
 	message += "[center]Pero tu viaje no termina aquí...[/center]\n\n"
@@ -102,11 +126,21 @@ func update_completion_message():
 	message += "[center][rainbow]¡Gracias por jugar![/rainbow][/center]"
 	
 	completion_message.text = message
+	print("Mensaje de completado actualizado")
 
 func update_completion_stats():
+	if not completion_stats_list:
+		push_error("completion_stats_list no existe")
+		return
+	
+	print("Actualizando estadísticas de completado")
+	
 	# Limpiar lista actual
 	for child in completion_stats_list.get_children():
 		child.queue_free()
+	
+	# Esperar un frame para que se limpien los nodos
+	await get_tree().process_frame
 	
 	# Obtener estadísticas finales
 	var general_stats = StatsManager.get_general_stats()
@@ -152,6 +186,12 @@ func update_completion_stats():
 			building_item.add_child(icon)
 			building_item.add_child(name_label)
 			grid.add_child(building_item)
+	else:
+		var empty_label = Label.new()
+		empty_label.text = "  (No hay edificios completados)"
+		empty_label.add_theme_font_size_override("font_size", 12)
+		empty_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+		completion_stats_list.add_child(empty_label)
 	
 	# Separador final
 	add_separator()
@@ -159,13 +199,25 @@ func update_completion_stats():
 	# Sección: Récords
 	create_stat_section_title("🎯 Tus Récords")
 	
-	var click_stats = StatsManager.get_click_stats()
-	create_completion_stat("🖱️ Clics Totales:", str(click_stats.total_clicks))
+	# Verificar si existen las funciones antes de llamarlas
+	if StatsManager.has_method("get_click_stats"):
+		var click_stats = StatsManager.get_click_stats()
+		if click_stats.has("total_clicks"):
+			create_completion_stat("🖱️ Clics Totales:", str(click_stats.total_clicks))
 	
-	var building_stats = StatsManager.get_building_stats()
-	var most_built = get_most_built_building(building_stats)
-	if most_built.count > 0:
-		create_completion_stat("⭐ Edificio Favorito:", format_building_name(most_built.type) + " (" + str(most_built.count) + ")")
+	# Obtener edificio más construido usando get_most_built_type
+	if StatsManager.has_method("get_most_built_type"):
+		var most_built = StatsManager.get_most_built_type()
+		if most_built.type != "" and most_built.count > 0:
+			create_completion_stat("⭐ Edificio Favorito:", format_building_name(most_built.type) + " (" + str(most_built.count) + ")")
+	elif StatsManager.has_method("get_all_building_counts"):
+		# Alternativa: obtener todos los conteos y calcular el más construido
+		var building_counts = StatsManager.get_all_building_counts()
+		var most_built = get_most_built_building(building_counts)
+		if most_built.count > 0:
+			create_completion_stat("⭐ Edificio Favorito:", format_building_name(most_built.type) + " (" + str(most_built.count) + ")")
+	
+	print("Estadísticas actualizadas. Total items: ", completion_stats_list.get_child_count())
 
 func create_stat_section_title(title_text: String):
 	var title = Label.new()
@@ -247,6 +299,7 @@ func hide_completion():
 	if is_animating:
 		return
 	
+	print("Ocultando panel de completado")
 	is_animating = true
 	
 	# Efecto de desaparición
@@ -262,10 +315,14 @@ func hide_completion():
 	print("Panel de completado cerrado")
 
 func _on_continue_button_pressed():
+	print("Botón 'Continuar Jugando' presionado")
 	hide_completion()
 
 func _on_close_button_pressed():
+	print("Botón 'Cerrar' presionado")
 	hide_completion()
 
+# Función para testing manual
 func show_completion_manual():
+	print("Mostrando panel manualmente (para pruebas)")
 	show_completion()

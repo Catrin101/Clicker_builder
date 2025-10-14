@@ -127,8 +127,8 @@ script = ExtResource("5_56ah5")
 [node name="VersionLabel" type="Label" parent="MenuContainer/MenuVBox/ButtonsContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0.501961, 0.501961, 0.501961, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.419813, 0.419813, 0.419813, 1)
+theme_override_font_sizes/font_size = 16
 text = "v1.0.0"
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]

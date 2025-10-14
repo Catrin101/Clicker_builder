@@ -13,7 +13,6 @@ func _ready():
 	synergies = {
 		"Tavern": 10,     # +10% con Taberna
 		"Villa": 10,      # +10% con Villa
-		"Castle": -5      # -5% con Castillo
 	}
 	
 	# Llamar al _ready del padre

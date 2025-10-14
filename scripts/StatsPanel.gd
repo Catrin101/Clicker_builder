@@ -5,6 +5,8 @@ extends Panel
 @onready var toggle_button: Button = $MarginContainer/StatsContainer/StatsHeader/ToggleStatsButton
 @onready var quick_stats: VBoxContainer = $MarginContainer/StatsContainer/QuickStatsContainer
 @onready var detailed_stats: VBoxContainer = $MarginContainer/StatsContainer/DetailedStatsContainer
+@onready var margin_container: MarginContainer = $MarginContainer
+@onready var stats_container: VBoxContainer = $MarginContainer/StatsContainer
 
 @onready var total_buildings_label: Label = $MarginContainer/StatsContainer/QuickStatsContainer/TotalBuildingsLabel
 @onready var total_pps_label: Label = $MarginContainer/StatsContainer/QuickStatsContainer/TotalPPSLabel
@@ -36,9 +38,16 @@ func _ready():
 	# Crear escena para items de edificios dinámicamente
 	create_building_item_scene()
 	
+	# Configurar el panel para que se adapte al contenido
+	size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	
 	# Actualizar UI inicial
 	update_quick_stats()
 	update_detailed_stats()
+	
+	# Ajustar tamaño inicial
+	call_deferred("_adjust_panel_size")
 	
 	print("StatsPanel inicializado")
 
@@ -53,30 +62,63 @@ func _on_toggle_button_pressed():
 	# Cambiar ícono del botón
 	if is_expanded:
 		toggle_button.text = "🔼"
-		# Expandir el panel
-		custom_minimum_size.y = 400
 	else:
 		toggle_button.text = "🔽"
-		# Contraer el panel
-		custom_minimum_size.y = 120
 	
 	# Actualizar stats cuando se expande
 	if is_expanded:
 		update_detailed_stats()
+	
+	# Ajustar tamaño del panel automáticamente
+	call_deferred("_adjust_panel_size")
+
+func _adjust_panel_size():
+	# Esperar un frame para que todos los controles calculen su tamaño
+	await get_tree().process_frame
+	
+	# Obtener el tamaño mínimo necesario del contenedor principal
+	var content_size = stats_container.get_combined_minimum_size()
+	
+	# Agregar los márgenes del MarginContainer
+	var margin_left = margin_container.get_theme_constant("margin_left")
+	var margin_top = margin_container.get_theme_constant("margin_top")
+	var margin_right = margin_container.get_theme_constant("margin_right")
+	var margin_bottom = margin_container.get_theme_constant("margin_bottom")
+	
+	var total_margins = Vector2(
+		margin_left + margin_right,
+		margin_top + margin_bottom
+	)
+	
+	# Calcular el tamaño total necesario
+	var required_size = content_size + total_margins
+	
+	# Agregar un pequeño padding extra para evitar problemas
+	required_size += Vector2(20, 20)
+	
+	# Aplicar el tamaño al panel
+	custom_minimum_size = required_size
+	size = required_size
+	
+	# Resetear el tamaño para forzar el recálculo
+	reset_size()
 
 func _on_stats_updated():
 	update_quick_stats()
 	if is_expanded:
 		update_detailed_stats()
+	call_deferred("_adjust_panel_size")
 
 func _on_building_count_changed(building_type: String, new_count: int):
 	update_quick_stats()
 	if is_expanded:
 		update_building_type_item(building_type, new_count)
+	call_deferred("_adjust_panel_size")
 
 func _on_pps_changed(new_pps: float):
 	total_pps_label.text = "⚡ PPS Total: %.1f" % new_pps
 	StatsManager.update_highest_pps(new_pps)
+	call_deferred("_adjust_panel_size")
 
 func _on_points_changed(new_points: int):
 	# Este label muestra los puntos totales ganados, no los actuales
@@ -90,10 +132,14 @@ func update_quick_stats():
 	total_buildings_label.text = "🏠 Edificios: %d" % total_buildings
 	total_pps_label.text = "⚡ PPS Total: %.1f" % GameManager.total_points_per_second
 	total_points_label.text = "💰 Puntos Ganados: %d" % general_stats.total_points_earned
+	
+	# Ajustar tamaño después de actualizar
+	call_deferred("_adjust_panel_size")
 
 func update_detailed_stats():
 	update_building_types_list()
 	update_general_stats_list()
+	call_deferred("_adjust_panel_size")
 
 func update_building_types_list():
 	# Limpiar lista actual
@@ -201,3 +247,4 @@ func refresh_all_stats():
 	update_quick_stats()
 	if is_expanded:
 		update_detailed_stats()
+	call_deferred("_adjust_panel_size")

@@ -11,7 +11,6 @@ func _ready():
 	# Configurar las sinergias específicas de la casa
 	synergies = {
 		"House": 15,      # +15% con Casa del aldeano
-		"Tavern": -10,      # -10% con Taverna
 	}
 	
 	# Llamar al _ready del padre

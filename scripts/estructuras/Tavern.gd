@@ -11,7 +11,6 @@ func _ready():
 	
 	# Configurar las sinergias específicas de la taberna
 	synergies = {
-		"Inn": 10,        # +10% con Posada
 		"Chapel": -10,    # -10% con Capilla
 		"Castle": -10     # -10% con Castillo
 	}

@@ -73,55 +73,37 @@ stream = ExtResource("6_88j14")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="ClickButton" type="Button" parent="UI"]
+[node name="ButonContiner" type="HBoxContainer" parent="UI"]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -352.0
-offset_top = -109.0
-offset_right = -74.0
-offset_bottom = -49.0
+offset_left = -282.0
+offset_top = -110.0
+offset_right = 289.0
+offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
+
+[node name="ClickButton" type="Button" parent="UI/ButonContiner"]
+layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 28
 text = "Clic (+1)"
-metadata/_edit_group_ = true
 
-[node name="ExpandLandButton" type="Button" parent="UI"]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -37.0
-offset_top = -109.0
-offset_right = 334.0
-offset_bottom = -49.0
-grow_horizontal = 2
-grow_vertical = 0
+[node name="ExpandLandButton" type="Button" parent="UI/ButonContiner"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Expandir Terreno"
-metadata/_edit_group_ = true
 
-[node name="CancelPlacementButton" type="Button" parent="UI"]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -188.0
-offset_top = -59.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="CancelPlacementButton" type="Button" parent="UI/ButonContiner"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Cancelar"
-metadata/_edit_group_ = true
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/CancelPlacementButton"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UI/ButonContiner/CancelPlacementButton"]
 stream = ExtResource("5_r01y2")
 script = ExtResource("6_rd5dn")
 

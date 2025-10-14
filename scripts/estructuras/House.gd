@@ -12,7 +12,6 @@ func _ready():
 	# Configurar las sinergias específicas de la casa
 	synergies = {
 		"Tavern": 5,      # +5% con Taberna
-		"Chapel": 5,      # +5% con Capilla
 		"Castle": -5      # -5% con Castillo
 	}
 	

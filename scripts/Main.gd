@@ -4,11 +4,11 @@ extends Node2D
 # Referencias a nodos UI
 @onready var points_display: Label = $UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer/PointsDisplay
 @onready var points_per_second_display: Label = $UI/StatsPanel/MarginContainer/StatsContainer/QuickStatsContainer/PointsPerSecondDisplay
-@onready var click_button: Button = $UI/ClickButton
-@onready var expand_land_button: Button = $UI/ExpandLandButton
+@onready var click_button: Button = $UI/ButonContiner/ClickButton
+@onready var expand_land_button: Button = $UI/ButonContiner/ExpandLandButton
 @onready var grid_manager: Node2D = $GridManager
 @onready var store_ui: VBoxContainer = $UI/StorePanel/StoreUI
-@onready var cancel_placement_button: Button = $UI/CancelPlacementButton
+@onready var cancel_placement_button: Button = $UI/ButonContiner/CancelPlacementButton
 @onready var music_player: AudioStreamPlayer = $MusicPlayer
 # Referencia al menú de pausa
 @onready var pause_menu: Control = $UI/PauseMenu

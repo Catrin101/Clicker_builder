@@ -9,11 +9,9 @@ func _ready():
 	description = "Una residencia opulenta para los más ricos de la sociedad. La villa atrae a comerciantes influyentes y eleva el prestigio de tu pueblo."
 	
 	# Configurar las sinergias específicas de la casa
-	synergies = {
-		"Inn": 10,    
+	synergies = {  
 		"Castle": 10,   
 		"Tavern": -15, 
-		"Thayched": -15   
 	}
 	
 	# Llamar al _ready del padre
